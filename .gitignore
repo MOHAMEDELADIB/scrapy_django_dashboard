@@ -24,9 +24,6 @@ docs/_build
 # data directory
 data
 
-# settings.py
-settings.py
-
 # PyCharm settings
 .idea
 
