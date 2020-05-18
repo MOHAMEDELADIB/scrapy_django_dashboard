@@ -18,6 +18,9 @@ dist
 build
 docs/_build
 
+# pyenv
+.python-version
+
 # data directory
 data
 
