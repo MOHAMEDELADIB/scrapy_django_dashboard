@@ -1,19 +1,16 @@
-.. django-dynamic-scraper documentation master file, created by
-   sphinx-quickstart on Mon Dec  5 15:05:19 2011.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. Scrapy Django Dashboard documentation master file, created by sphinx-quickstart. You can adapt this file completely to your liking, but it should at least contain the root `toctree` directive.
 
 Scrapy Django Dashboard - Documentation
-======================================
+=======================================
 
-Django Dynamic Scraper (DDS) is an app for Django build on top of the scraping framework Scrapy_. While preserving many
-of the features of Scrapy it lets you dynamically create and manage spiders via the Django admin interface.
+Scrapy Django Dashboard is a fork of `Django Dynamic Scraper (DDS) by Holger Drewes <https://github.com/holgerd77/django-dynamic-scraper>`_. It is a web app allowing users to create and manage Scrapy spiders through Django Admin dashboard.
 
 .. note::
    Latest new features added :
 
-   * Django ``1.11``/Scrapy ``1.5`` support
-   * Python ``3.5``/``3.6``/``3.7 (experimental)`` support
+   * Python ``3.7.7``
+   * Django ``3.0.6``
+   * Scrapy ``2.1.0``   
    * ``Javascript`` rendering
    * Scraping ``JSON`` content
    * More flexible ID and detail page URL(s) concept
