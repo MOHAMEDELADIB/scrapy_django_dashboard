@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-django-dynamic-scraper - Documentation
+Scrapy Django Dashboard - Documentation
 ======================================
 
 Django Dynamic Scraper (DDS) is an app for Django build on top of the scraping framework Scrapy_. While preserving many
