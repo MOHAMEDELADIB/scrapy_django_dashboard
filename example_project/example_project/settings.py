@@ -5,7 +5,7 @@ import os, sys
 DEBUG = True
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(PROJECT_ROOT, "../.."))
+sys.path.insert(0, os.path.join(PROJECT_ROOT, "../.."))  # This helps to find the scrapy_django_dashboard
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -89,7 +89,8 @@ STATICFILES_FINDERS = (
 SECRET_KEY = 'h51vphv5#0957l2o(jrdsai!l54h(kh&amp;-m^4-1xdd7nwa6=1^^'
 
 
-MIDDLEWARE_CLASSES = (
+# https://stackoverflow.com/a/59919829
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -133,7 +134,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'kombu.transport.django',
     'djcelery',
-    'dynamic_scraper',
+    'scrapy_django_dashboard',
     'open_news',
 )
 
