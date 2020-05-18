@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'django-dynamic-scraper'
-copyright = u'2017, Holger Drewes'
+project = u'Scrapy Django Dashboard'
+copyright = u'2020, 0xboz'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -164,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'django-dynamic-scraperdoc'
+htmlhelp_basename = 'scrapy-django-dashboard-doc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -183,8 +183,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'django-dynamic-scraper.tex', u'django-dynamic-scraper Documentation',
-   u'Holger Drewes', 'manual'),
+  ('index', 'scrapy-django-dashboard.tex', u'Scrapy Django Dashboard Documentation',
+   u'0xboz', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -213,8 +213,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'django-dynamic-scraper', u'django-dynamic-scraper Documentation',
-     [u'Holger Drewes'], 1)
+    ('index', 'scrapy-django-dashboard', u'Scrapy Django Dashboard Documentation',
+     [u'0xboz'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -227,8 +227,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'django-dynamic-scraper', u'django-dynamic-scraper Documentation',
-   u'Holger Drewes', 'django-dynamic-scraper', 'One line description of project.',
+  ('index', 'scrapy-django-dashboard', u'Scrapy Django Dashboard Documentation',
+   u'0xboz', 'scrapy-django-dashboard', 'One line description of project.',
    'Miscellaneous'),
 ]
 
