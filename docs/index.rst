@@ -12,6 +12,8 @@ Scrapy Django Dashboard is a fork of `Django Dynamic Scraper (DDS) by Holger Dre
    * Django ``3.0.6``
    * Scrapy ``2.1.0`` 
 
+   Due to the compatibility issues, the selected versions of celery, kombu and django-celery are placed in Root dir. Minor modifications in kombu package.
+   
    * celery ``3.1``
    * modified kombu ``3.0.37``
    * django-celery ``3.3.1``
