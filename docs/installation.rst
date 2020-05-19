@@ -7,90 +7,91 @@ Installation
 
 Requirements
 ------------
-The **basic requirements** for Django Dynamic Scraper are:
+The **prerequisites** for Scrapy Django Dashboard are as follows:
 
-* Python 2.7 or Python 3.5, 3.6, 3.7 (experimental)
-* `Django <https://www.djangoproject.com/>`_ 1.11 (2.0+ not supported yet)
-* `Scrapy <http://www.scrapy.org>`_ 1.5
-* `scrapy-djangoitem <https://github.com/scrapy-plugins/scrapy-djangoitem>`_ 1.1
+* Python 3.7.7
+* `Django <https://www.djangoproject.com/>`_ 3.0.6
+* `Scrapy <http://www.scrapy.org>`_ 2.1.0
+* `scrapy-djangoitem <https://github.com/scrapy-plugins/scrapy-djangoitem>`_ 1.1.1
 * `Python JSONPath RW 1.4+ <https://github.com/kennknowles/python-jsonpath-rw>`_
 * `Python-Future (preparing the code base to run with Python 2/3) 0.17.x <http://python-future.org/>`_
 
-If you want to use the **scheduling mechanism** of DDS you also have to install ``django-celery``:
+If you need the **scheduling mechanism**, install ``django-celery``:
 
-* `django-celery <http://ask.github.com/django-celery/>`_ 3.2.1
+* `django-celery <http://ask.github.com/django-celery/>`_ 3.3.1
+
+Due to the compatibility issues, the selected versions of `celery`, `kombu` and `django-celery` reside in root dir. I have also made a quick fix in `kombu` package to circumvent this well known issue.::
+    
+    TypeError: __init__() missing 1 required positional argument: 'on_delete'
+
+Find more about `on_delete by reading the documentation <https://docs.djangoproject.com/en/3.0/ref/models/fields/#django.db.models.ForeignKey.on_delete>`_
+
+Therefore, the versions of `celery`, `kombu` and `django-celery` in root dir are as follows:  
+
+* celery ``3.1``
+* modified kombu ``3.0.37``
+* django-celery ``3.3.1`` 
+
 
 For **scraping images** you will need the Pillow Library:
 
 * `Pillow Libray (PIL fork) 5.x <https://python-pillow.github.io/>`_
 
-Since ``v.0.4.1`` ``DDS`` has basic ``Splash`` support for rendering/processing ``Javascript`` before
-scraping the page. For this to work you have to install and configure ```Splash`` and the connecting (see: :ref:`setting_up_scrapyjs_splash`) 
+For rendering ``Javascript`` before
+scraping the page, install and configure ``Splash`` and the connecting (see: :ref:`setting_up_scrapyjs_splash`) 
 ``scrapy-splash`` library:
 
-* `scrapy-splash <https://github.com/scrapy-plugins/scrapy-splash>`_ 0.7 
+* `scrapy-splash <https://github.com/scrapy-plugins/scrapy-splash>`_ 0.7.2 
  
-.. _release_compatibility:
-
-Release Compatibility Table
----------------------------
-Have a look at the following table for an overview which ``Django``, ``Scrapy``, 
-``Python`` and ``django-celery`` versions are supported by which ``DDS`` version. 
-Due to dev resource constraints backwards compatibility for older ``Django`` or 
-``Scrapy`` releases for new ``DDS`` releases normally can not be granted.
-
-+-------------+-------------------+----------------------+-----------------------+-------------------------------+
-| DDS Version | Django            | Scrapy               | Python                | django-celery/Celery/Kombu    |
-+=============+===================+======================+=======================+===============================+
-| 0.13        | 1.11              | 1.5                  | 2.7/3.5/3.6/3.7 (exp) | 3.2.1/3.1.25/3.0.37           |
-+-------------+-------------------+----------------------+-----------------------+-------------------------------+
-| 0.11/0.12   | 1.8/1.9/1.10/1.11 | 1.1/1.2(?)/1.3/1.4   | 2.7+/3.4+             | 3.2.1/3.1.25/3.0.37           |
-+-------------+-------------------+----------------------+-----------------------+-------------------------------+
-| 0.4-0.9     | 1.7/1.8           | 0.22/0.24            | 2.7                   | 3.1.16 (newer untested)       |
-+-------------+-------------------+----------------------+-----------------------+-------------------------------+
-| 0.3         | 1.4-1.6           | 0.16/0.18            | 2.7                   | 3.0+ (3.1+ untested)          |
-+-------------+-------------------+----------------------+-----------------------+-------------------------------+
-| 0.2         | 1.4               | 0.14                 | 2.7                   | (3.0 untested)                |
-+-------------+-------------------+----------------------+-----------------------+-------------------------------+
-
-.. note::
-   Please get in touch (`GitHub <https://github.com/holgerd77/django-dynamic-scraper>`_) if you have any additions to this table. A library version is counted as supported if the
-   DDS testsuite is running through (see: :ref:`test_suite`).
-
-Installation with Pip
----------------------
-Django Dynamic Scraper can be found on the PyPI Package Index `(see package description) <http://pypi.python.org/pypi/django-dynamic-scraper>`_. 
-For the installation with Pip, first install the requirements above. Then install DDS with::
-
-    pip install django-dynamic-scraper
-
-Manual Installation
+Installation
 -------------------
-For manually installing Django Dynamic Scraper download the DDS source code from GitHub or clone the project with
-git into a folder of your choice::
+Clone the source code with git::
 
-    git clone https://github.com/holgerd77/django-dynamic-scraper.git .
+    git clone https://github.com/0xboz/scrapy_django_dashboard.git
 
-Then you have to met the requirements above. You can do this by
-manually installing the libraries you need with ``pip`` or ``easy_install``, which may be a better choice
-if you e.g. don't want to risk your Django installation to be touched during the installation process. 
-However if you are sure that there
-is no danger ahead or if you are running DDS in a new ``virtualenv`` environment, you can install all the
-requirements above together with::
+**RECOMMENDATION**  
 
-    pip install -r requirements.txt
-    
-Then either add the ``dynamic_scraper`` folder to your 
-``PYTHONPATH`` or your project manually or install DDS with::
+Run your code in a ``virtualenv``. For the sake of this docs, let us use `pyenv` to cheery-pick the local Python interpreter, create a virtual environment for the sample project, and finally install all required packages list in `requirements.txt`.
 
-    python setup.py install
-    
-Note, that the requirements are NOT included in the ``setup.py`` script since this caused some problems 
-when testing the installation and the requirements installation process with ``pip`` turned out to be
-more stable.
-    
-Now, to use DDS in your Django project add ``'dynamic_scraper'`` to your ``INSTALLED_APPS`` in your
-project settings.
+If you are running Debian OS, you are in luck to install `pyenv` with `a simple script <https://github.com/0xboz/install_pyenv_on_debian>`_.::
+
+    sudo apt install -y curl && curl https://raw.githubusercontent.com/0xboz/install_pyenv_on_debian/master/install.sh | bash
+
+If you are planning to uninstall `pyenv` sometime in the future, run the command:::
+
+    curl https://raw.githubusercontent.com/0xboz/install_pyenv_on_debian/master/uninstall.sh | bash
+
+Install Python and set it as the default interpreter locally.::
+
+    pyenv install 3.7.7
+    pyenv local 3.7.7
+
+Create a `virtualenv` with `pyenv-virtualenv`.::
+
+    pyenv virtualenv venv
+
+Activate this `virtualenv`.::
+
+    pyenv activate venv
+
+Install all the required packages above together with::
+
+    (venv) pip install -r requirements.txt
+
+In case you need to exit from this venv.::
+
+    (venv) pyenv deactivate
+
+Integration
+-------------------
+
+For your reference, check out `example_project` and find out more details in the `settings.py`
+
+Start a new Django project.::
+
+    (venv) django-admin startproject *sample_project*
+
+Now, add ``scrapy_django_dashboard`` into ``INSTALLED_APPS`` in Django project settings.
 
 .. _settingupscrapypython:
 
