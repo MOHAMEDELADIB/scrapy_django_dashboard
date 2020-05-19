@@ -6,8 +6,8 @@ from scrapy import signals
 from scrapy.exceptions import CloseSpider
 from scrapy.http import Request
 from pydispatch import dispatcher
-from dynamic_scraper.spiders.django_base_spider import DjangoBaseSpider
-from dynamic_scraper.models import Scraper
+from scrapy_django_dashboard.spiders.django_base_spider import DjangoBaseSpider
+from scrapy_django_dashboard.models import Scraper
 
 
 class CheckerTest(DjangoBaseSpider):

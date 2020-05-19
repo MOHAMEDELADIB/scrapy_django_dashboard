@@ -18,11 +18,11 @@ from scrapy.exceptions import CloseSpider
 from django.db.models.signals import post_save
 from django.utils.encoding import smart_text
 
-from dynamic_scraper.spiders.django_base_spider import DjangoBaseSpider
-from dynamic_scraper.models import ScraperElem
-from dynamic_scraper.utils.loader import JsonItemLoader
-from dynamic_scraper.utils.scheduler import Scheduler
-from dynamic_scraper.utils import processors
+from scrapy_django_dashboard.spiders.django_base_spider import DjangoBaseSpider
+from scrapy_django_dashboard.models import ScraperElem
+from scrapy_django_dashboard.utils.loader import JsonItemLoader
+from scrapy_django_dashboard.utils.scheduler import Scheduler
+from scrapy_django_dashboard.utils import processors
 
 
 

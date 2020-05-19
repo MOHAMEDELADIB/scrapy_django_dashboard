@@ -14,7 +14,7 @@ django.setup()
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from dynamic_scraper.models import Log, LogMarker
+from scrapy_django_dashboard.models import Log, LogMarker
 
 
 class NoParsingFilter(logging.Filter):

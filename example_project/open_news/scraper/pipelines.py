@@ -4,7 +4,7 @@ from builtins import object
 import logging
 from django.db.utils import IntegrityError
 from scrapy.exceptions import DropItem
-from dynamic_scraper.models import SchedulerRuntime
+from scrapy_django_dashboard.models import SchedulerRuntime
 
 class DjangoWriterPipeline(object):
     

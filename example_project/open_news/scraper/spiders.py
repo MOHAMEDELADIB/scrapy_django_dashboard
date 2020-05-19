@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from dynamic_scraper.spiders.django_spider import DjangoSpider
+from scrapy_django_dashboard.spiders.django_spider import DjangoSpider
 from open_news.models import NewsWebsite, Article, ArticleItem
 
 

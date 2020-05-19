@@ -4,7 +4,7 @@ from builtins import next
 from builtins import str
 from builtins import object
 import hashlib, logging, ntpath
-from dynamic_scraper.models import ScraperElem
+from scrapy_django_dashboard.models import ScraperElem
 from django.utils.encoding import smart_text
 from scrapy.pipelines.images import ImagesPipeline
 from scrapy.utils.python import to_bytes
