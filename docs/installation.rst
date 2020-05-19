@@ -73,31 +73,27 @@ In case you need to exit from this virtual environment. ::
 Splash (Optional)
 ^^^^^^^^^^^^^^^^^
 
-More and more webpages only show their full information load after various ``Ajax`` calls and/or ``Javascript`` 
-function processing. For being able to scrape those websites ``DDS`` supports ``Splash`` for basic JS rendering/processing.
+`Scrapy Django Dashboard` supports `Splash`_ (A javascript rendering service).
 
-For this to work you have to install ``Splash`` (the Javascript rendering service) installed - probably via ``Docker``- 
-(see `installation instructions <https://splash.readthedocs.org/en/latest/install.html>`_).
+Install `Splash`_ (see `Splash Installation Instructions`_).
 
-Tested versions to work with ``DDS``:
+Tested versions:
  
-* Splash 1.8
-* Splash 2.3  
+* Splash ``1.8``
+* Splash ``2.3`` 
 
-Then ``scrapy-splash`` with::
+Once `Splash`_ is up running, install `Scrapy-Splash`_ ::
 
-    pip install scrapy-splash
+    (venv) pip install scrapy-splash
 
-Afterwards follow the configuration instructions on the `scrapy-splash GitHub page <https://github.com/scrapy-plugins/scrapy-splash#configuration>`_.
+Refer to `Scrapy-Splash GitHub configuration page`_ for further instructions.
 
-For customization of ``Splash`` args ``DSCRAPER_SPLASH_ARGS`` setting can be used (see: :ref:`settings`).
+To customize ``Splash`` args, use ``DSCRAPER_SPLASH_ARGS`` (see: :ref:`settings`). 
 
-``Splash`` can later be used via activating it for certain scrapers in the corresponding ``Django Admin`` form.
+``Splash`` can be later activated in `Django` Admin dashboard.
 
 .. note::
-   Resources needed for completely rendering a website on your scraping machine are vastly larger then for just
-   requesting/working on the plain HTML text without further processing, so make use of ``Splash`` capability
-   on when needed!
+   Resources needed for completely rendering a website on your scraping machine are vastly larger then for just requesting/working on the plain HTML text without further processing, so make use of ``Splash`` capability on when needed!
 
 .. _Python: https://www.python.org/
 .. _Scrapy: http://www.scrapy.org/
@@ -115,3 +111,7 @@ For customization of ``Splash`` args ``DSCRAPER_SPLASH_ARGS`` setting can be use
 .. _`Django ORM <on_delete> by reading the documentation`: https://docs.djangoproject.com/en/3.0/ref/models/fields/#django.db.models.ForeignKey.on_delete
 .. _`a simple script`: https://github.com/0xboz/install_pyenv_on_debian
 .. _`example_project/settings.py`:  https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/example_project/settings.py
+
+.. _`Splash`: https://github.com/scrapinghub/splash
+.. _`Splash Installation Instructions`: https://splash.readthedocs.io/en/latest/install.html
+.. _`Scrapy-Splash GitHub configuration page`: https://github.com/scrapy-plugins/scrapy-splash#configuration
