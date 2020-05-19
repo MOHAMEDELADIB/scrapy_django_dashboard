@@ -1,9 +1,8 @@
-.. Scrapy Django Dashboard documentation master file, created by sphinx-quickstart. You can adapt this file completely to your liking, but it should at least contain the root `toctree` directive.
-
+========================================
 Scrapy Django Dashboard - Documentation
-=======================================
+========================================
 
-Scrapy Django Dashboard is a fork of `Django Dynamic Scraper (DDS) by Holger Drewes <https://github.com/holgerd77/django-dynamic-scraper>`_. It is a web app allowing users to create and manage Scrapy spiders through Django Admin dashboard.
+Scrapy Django Dashboard is a fork of `Django Dynamic Scraper (DDS) by Holger Drewes`_. It is a web app allowing users to create and manage Scrapy spiders through Django Admin dashboard.
 
 .. note::
    Latest new features added :
@@ -11,26 +10,23 @@ Scrapy Django Dashboard is a fork of `Django Dynamic Scraper (DDS) by Holger Dre
    * Python ``3.7.7``
    * Django ``3.0.6``
    * Scrapy ``2.1.0``
-   * ``Javascript`` rendering
+   * Javascript rendering
    * Scraping ``JSON`` content
    * More flexible ID and detail page URL(s) concept
-   * Several checkers for a single scraper
    * Custom ``HTTP Header/Body``, ``Cookies``, ``GET/POST`` requests
-   * ``Scrapy Meta`` attributes
-   * Scraper/Checker ``Monitoring``
-
-   See :ref:`releasenotes` for further details!
+   * Scrapy Meta attributes
+   * Scraper/Checker Monitoring
 
 Features
 --------
 
-* Create and manage scrapers for your Django models in the Django admin interface
-* Many features of Scrapy_ like regular expressions, processors, pipelines (see `Scrapy Docs`_)
-* Image/screenshot scraping
-* Dynamic scheduling depending on crawling success via Django Celery
-* Checkers to check if items once scraped are still existing
+* Create and manage Scrapy_ spiders via Django admin dashboard
+* Support Scrapy_ regular expressions, processors, and pipelines (see `Scrapy Docs`_)
+* Support image/screenshot scraping
+* Spider scheduling via ``django-celery``
+* Existing items checker 
 
-
+.. _`Django Dynamic Scraper (DDS) by Holger Drewes`: https://github.com/holgerd77/django-dynamic-scraper
 .. _Scrapy: http://www.scrapy.org 
 .. _`Scrapy Docs`: http://doc.scrapy.org
 
