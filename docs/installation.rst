@@ -1,5 +1,6 @@
 .. _installation:
 
+============
 Installation
 ============
 
@@ -7,6 +8,7 @@ Installation
 
 Requirements
 ------------
+
 The **prerequisites** for Scrapy Django Dashboard are as follows:
 
 * Python_ 3.7.7
@@ -34,9 +36,8 @@ Clone the source code with git ::
 
     git clone https://github.com/0xboz/scrapy_django_dashboard.git
 
-**RECOMMENDATION**  
-
-Run the code in a ``virtualenv``. For the sake of this docs, let us use `pyenv` to cheery-pick the local Python interpreter, create a virtual environment for the sample project, and finally install all required packages list in `requirements.txt`.
+.. Note::
+    **RECOMMENDATION:**  Run the code in a ``virtualenv``. For the sake of this docs, let us use `pyenv` to cheery-pick the local Python interpreter, create a virtual environment for the sample project, and finally install all required packages list in `requirements.txt`.
 
 If you are running Debian OS, you are in luck. You can install `pyenv`_ with `a simple script`_. ::
 
@@ -70,7 +71,7 @@ In case you need to exit from this virtual environment. ::
 .. _splash_optional:
 
 Splash (Optional)
------------------
+^^^^^^^^^^^^^^^^^
 
 More and more webpages only show their full information load after various ``Ajax`` calls and/or ``Javascript`` 
 function processing. For being able to scrape those websites ``DDS`` supports ``Splash`` for basic JS rendering/processing.
