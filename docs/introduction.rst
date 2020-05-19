@@ -1,26 +1,20 @@
+============
 Introduction
 ============
 
-With Django Dynamic Scraper (DDS) you can define your `Scrapy <http://www.scrapy.org>`_ scrapers dynamically via the Django admin interface
-and save your scraped items in the database you defined for your Django project.
-Since it simplifies things DDS is not usable for all kinds of scrapers, but it is well suited for the relatively
-common case of regularly scraping a website with a list of updated items (e.g. news, events, etc.) and then dig 
-into the detail page to scrape some more infos for each item.
+``Scrapy Django Dashboard`` allows you to create and manage `Scrapy`_ spiders through the Django Admin dashboard and save the scraped items into the database defined in Django models. 
 
-Here are some examples for some use cases of DDS:
-Build a scraper for ...
+``Scrapy Django Dashboard`` is well suited for some common scraping tasks, such as extracting a list of items (e.g. news and events) from the main page, and further fetching more information of each item from the detail page.
 
-* Local music events for different event locations in your city
-* New organic recipes for asian food
-* The latest articles from blogs covering fashion and style in Berlin
-* ...Up to your imagination! :-)
+Here are some examples of using ``Scrapy Django Dashboard``:
 
-Django Dynamic Scraper tries to keep its data structure in the database as separated as possible from the 
-models in your app, so it comes with its own Django model classes for defining scrapers, runtime information
-related to your scraper runs and classes for defining the attributes of the models you want to scrape.
-So apart from a few foreign key relations your Django models stay relatively independent and you don't have
-to adjust your model code every time DDS's model structure changes.   
+* Local music events in a city
+* New organic recipes for Asian foodies
+* The latest articles from fashion blogs in NYC
 
-The DDS repository on GitHub contains an example project in the ``example_project`` folder, showing how to 
-create a scraper for open news content on the web (starting with `Wikinews <http://en.wikinews.org/wiki/Main_Page>`_ 
-from Wikipedia). The source code from this example is used in the :ref:`getting_started` guide.
+``Scrapy Django Dashboard`` keeps the data structure separated from app models as much as possible. Therefore, it comes with its own Django model classes for the spiders, their runtime information and model attributes. Apart from a few foreign key relations, the app models can stay relatively independent.
+
+``Scrapy Django Dashboard`` `GitHub`_ page contains a sample project in ``example_project`` directory. More details on this sample project are in :ref:`getting_started` guide.
+
+.. _`Scrapy`: http://www.scrapy.org/
+.. _`GitHub`: https://github.com/0xboz/scrapy_django_dashboard
