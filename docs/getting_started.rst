@@ -1,12 +1,136 @@
 .. _getting_started:
 
 ===============
-Getting started
+Getting Started
 ===============
 
-.. _Scrapy: http://www.scrapy.org 
-.. _Wikinews: http://en.wikinews.org/wiki/Main_Page
-.. _GitHub: https://github.com/holgerd77/django-dynamic-scraper
+In this tutorial, we are going to use `example_project` to walk you through how to integrate `Scrapy Django Dashboard` into a typical `Django` project.
+
+.. Note::
+    This sample project has **ALREADY** been included in GitHub_ for your convenience. 
+
+.. _example_project_summary:
+
+Example Project Summary
+-----------------------
+
+The code scrapes the news URLs, thumbnails and excerpts from the main page of WikiNews_. Further, it collects the news title from each news detail page. This might sound redundant at first, but it is a selected way to demonstrate the difference in ``Main Page`` and ``Detail Page`` as we deploy the spiders in a real project. 
+
+.. Note::
+  The following instructions assume you have already finished the :ref:`installation` successfully. `(venv)` means a virtual environment is activated in advance, which is considered as the best practice.
+
+Start a new Django project. ::
+
+    (venv) django-admin startproject example_project
+
+This results in a `example_project` dir in the root dir with a structure like this: ::
+
+    example_project/  
+        example_project/
+            __init__.py  
+            settings.py  
+            urls.py  
+            wsgi.py  
+        manage.py  
+
+Now, let us move into `example_project` dir. ::
+
+    (venv) cd example_project
+
+Add ``scrapy_django_dashboard`` into ``INSTALLED_APPS`` in Django project settings. For more details, check out `example_project/settings.py`_.  
+
+
+Further, we create a demo app called `open_news`. ::
+
+    (venv)python manage.py startapp open_news
+
+This results in a `open_news` dir in `example_project` dir with a structure like this: ::
+
+    open_news/  
+        migrations/
+            __init__.py
+        __init__.py  
+        admin.py
+        apps.py
+        models.py
+        tests.py
+        views.py
+
+The next step is to set up Scrapy_ in `example_project`.
+
+.. _configuring_scrapy:
+
+Configuring Scrapy
+------------------
+
+For getting Scrapy_ to work the recommended way to start a new Scrapy project normally is to create a directory
+and template file structure with the ``scrapy startproject myscrapyproject`` command on the shell first. 
+However, there is (initially) not so much code to be written left and the directory structure
+created by the ``startproject`` command cannot really be used when connecting Scrapy to the Django Dynamic Scraper
+library. So the easiest way to start a new scrapy project is to just manually add the ``scrapy.cfg`` 
+project configuration file as well as the Scrapy ``settings.py`` file and adjust these files to your needs.
+It is recommended to just create the Scrapy project in the same Django app you used to create the models you
+want to scrape and then place the modules needed for scrapy in a sub package called ``scraper`` or something
+similar. After finishing this chapter you should end up with a directory structure similar to the following
+(again illustrated using the open news example)::
+
+  example_project/
+    scrapy.cfg
+    open_news/
+      models.py # Your models.py file
+      (tasks.py)      
+      scraper/
+        settings.py
+        spiders.py
+        (checkers.py)
+        pipelines.py
+      
+Your ``scrapy.cfg`` file should look similar to the following, just having adjusted the reference to the
+settings file and the project name::
+  
+  [settings]
+  default = open_news.scraper.settings
+  
+  #Scrapy till 0.16
+  [deploy]
+  #url = http://localhost:6800/
+  project = open_news
+
+  #Scrapy with separate scrapyd (0.18+)
+  [deploy:scrapyd1]
+  url = http://localhost:6800/
+  project = open_news 
+
+
+And this is your ``settings.py`` file::
+
+  import os
+  
+  PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+  os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings") #Changed in DDS v.0.3
+
+  BOT_NAME = 'open_news'
+  
+  SPIDER_MODULES = ['dynamic_scraper.spiders', 'open_news.scraper',]
+  USER_AGENT = '%s/%s' % (BOT_NAME, '1.0')
+  
+  #Scrapy 0.20+
+  ITEM_PIPELINES = {
+      'dynamic_scraper.pipelines.ValidationPipeline': 400,
+      'open_news.scraper.pipelines.DjangoWriterPipeline': 800,
+  }
+
+  #Scrapy up to 0.18
+  ITEM_PIPELINES = [
+      'dynamic_scraper.pipelines.ValidationPipeline',
+      'open_news.scraper.pipelines.DjangoWriterPipeline',
+  ]
+
+The ``SPIDER_MODULES`` setting is referencing the basic spiders of DDS and our ``scraper`` package where
+Scrapy will find the (yet to be written) spider module. For the ``ITEM_PIPELINES`` setting we have to
+add (at least) two pipelines. The first one is the mandatory pipeline from DDS, doing stuff like checking
+for the mandatory attributes we have defined in our scraper in the DB or preventing double entries already
+existing in the DB (identified by the url attribute of your scraped items) to be saved a second time.  
 
 
 .. _creatingdjangomodels:
@@ -426,7 +550,7 @@ as following::
   (beginnings/endings are marked with a unique string in the form ``RP_MP_{num}_START`` for using full-text
   search for orientation)
 
-* If you don't want your output saved to the Django DB but to a custom file you can use Scrapy`s build-in 
+* If you don't want your output saved to the Django DB but to a custom file you can use Scrapy's build-in 
   output options ``--output=FILE`` and ``--output-format=FORMAT`` to scrape items into a file. Use this without 
   setting the ``-a do_action=yes`` parameter! 
 
@@ -453,6 +577,10 @@ to the DB. If you try again later when some news articles changed on the Wikinew
 articles should be added to the DB. 
 
 
+.. _GitHub: https://github.com/0xboz/scrapy_django_dashboard
+.. _Scrapy: http://www.scrapy.org/
+.. _Wikinews: http://en.wikinews.org/wiki/Main_Page
 
-
-
+.. _`Django ORM <on_delete> by reading the documentation`: https://docs.djangoproject.com/en/3.0/ref/models/fields/#django.db.models.ForeignKey.on_delete
+.. _`a simple script`: https://github.com/0xboz/install_pyenv_on_debian
+.. _`example_project/settings.py`:  https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/example_project/settings.py
