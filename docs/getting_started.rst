@@ -158,12 +158,7 @@ And this is the `example_project/example_project/open_news/scraper/settings.py`_
 
   Refer to GitHub for more comments on ``open_news/scraper/settings.py``.
 
-The ``SPIDER_MODULES`` setting is referencing the basic spiders of DDS and our ``scraper`` package where
-Scrapy will find the (yet to be written) spider module. For the ``ITEM_PIPELINES`` setting we have to
-add (at least) two pipelines. The first one is the mandatory pipeline from DDS, doing stuff like checking
-for the mandatory attributes we have defined in our scraper in the DB or preventing double entries already
-existing in the DB (identified by the url attribute of your scraped items) to be saved a second time.  
-
+The ``SPIDER_MODULES`` is a list of the spider modules of ``Scrapy Django Dashboard`` app and ``scraper`` package where Scrapy will look for spiders. In ``ITEM_PIPELINES``, ``scrapy_django_dashboard.pipelines.DjangoImagesPipeline``, a sub-class of ``scrapy.pipelines.images.ImagesPipeline``, enables scraping image media files; ``scrapy_django_dashboard.pipelines.ValidationPipeline`` checks the mandatory attributes and prevents duplicate entries by examining the unique key (the url attribute in our example).  
 
 .. _creatingdjangomodels:
 
