@@ -62,68 +62,97 @@ The next step is to set up Scrapy_ for ``open_news`` app.
 Configuring Scrapy
 ------------------
 
-For getting Scrapy_ to work the recommended way to start a new Scrapy project normally is to create a directory
-and template file structure with the ``scrapy startproject myscrapyproject`` command on the shell first. 
-However, there is (initially) not so much code to be written left and the directory structure
-created by the ``startproject`` command cannot really be used when connecting Scrapy to the Django Dynamic Scraper
-library. So the easiest way to start a new scrapy project is to just manually add the ``scrapy.cfg`` 
-project configuration file as well as the Scrapy ``settings.py`` file and adjust these files to your needs.
-It is recommended to just create the Scrapy project in the same Django app you used to create the models you
-want to scrape and then place the modules needed for scrapy in a sub package called ``scraper`` or something
-similar. After finishing this chapter you should end up with a directory structure similar to the following
-(again illustrated using the open news example)::
+The common way to start a Scrapy project is to run: ::
 
-  example_project/
-    scrapy.cfg
-    open_news/
-      models.py # Your models.py file
-      (tasks.py)      
-      scraper/
-        settings.py
-        spiders.py
-        (checkers.py)
-        pipelines.py
-      
-Your ``scrapy.cfg`` file should look similar to the following, just having adjusted the reference to the
-settings file and the project name::
-  
+  scrapy startproject myscrapyproject
+
+This creates the project directory and boilerplate files. However, this approach will not save much time down the road and the boilerplate code can not directly interact with ``Scrapy Django Dashboard`` app without manual configuration.
+
+Therefore, the preferred way of starting a Scrapy project,  is to create ``scrapy.cfg`` in ``example_project`` dir (where ``open_news`` dir resides). Further, create ``scrapy`` dir inside of ``open_news`` dir. Add the following files according to this dir tree: ::
+
+    example_project/  
+        example_project/
+            __init__.py  
+            settings.py  
+            urls.py  
+            wsgi.py 
+        open_news/  
+            migrations/
+                __init__.py
+            scraper/  # Manually added
+                __init__.py  # Manually added
+                checkers.py  # Manually added
+                pipelines.py  # Manually added
+                settings.py  # Manually added
+                spiders.py  # Manually added
+            __init__.py  
+            admin.py
+            apps.py
+            models.py
+            tasks.py  # Manually added
+            tests.py
+            views.py         
+        manage.py
+        scrapy.cfg  # Manually added
+        
+.. note::
+
+  It is recommended to create a Scrapy project within the app of interest. To achieve this, create the necessary modules for the Scrapy project in a sub dir (named ``scraper``) of this app dir. 
+
+Here is what ``scrapy.cfg`` looks like. Make changes for the app name and settings files accordingly. ::
+ 
+  # Define open_news app scrapy settings
   [settings]
   default = open_news.scraper.settings
-  
-  #Scrapy till 0.16
-  [deploy]
-  #url = http://localhost:6800/
-  project = open_news
 
-  #Scrapy with separate scrapyd (0.18+)
+  # Scrapy deployment using scrapyd
   [deploy:scrapyd1]
   url = http://localhost:6800/
-  project = open_news 
+  project = open_news
 
 
-And this is your ``settings.py`` file::
+And this is your ``settings.py`` file. ::
 
-  import os
-  
+  from __future__ import unicode_literals
+  import os, sys
+
   PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-  os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings") #Changed in DDS v.0.3
+  os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
+  sys.path.insert(0, os.path.join(PROJECT_ROOT, "../../..")) 
+
+  MEDIA_ALLOW_REDIRECTS = True
 
   BOT_NAME = 'open_news'
-  
-  SPIDER_MODULES = ['dynamic_scraper.spiders', 'open_news.scraper',]
-  USER_AGENT = '%s/%s' % (BOT_NAME, '1.0')
-  
-  #Scrapy 0.20+
+
+  LOG_LEVEL = 'INFO'
+
+  SPIDER_MODULES = [
+    'scrapy_django_dashboard.spiders',
+    'open_news.scraper',
+  ]  
+
+  USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
+
   ITEM_PIPELINES = {
-      'dynamic_scraper.pipelines.ValidationPipeline': 400,
-      'open_news.scraper.pipelines.DjangoWriterPipeline': 800,
+    'scrapy_django_dashboard.pipelines.DjangoImagesPipeline': 200,
+    'scrapy_django_dashboard.pipelines.ValidationPipeline': 400,
+    'open_news.scraper.pipelines.DjangoWriterPipeline': 800,
   }
 
-  #Scrapy up to 0.18
-  ITEM_PIPELINES = [
-      'dynamic_scraper.pipelines.ValidationPipeline',
-      'open_news.scraper.pipelines.DjangoWriterPipeline',
-  ]
+  IMAGES_STORE = os.path.join(PROJECT_ROOT, '../thumbnails')
+  IMAGES_THUMBS = {
+    'medium': (50, 50),
+    'small': (25, 25),
+  }
+
+  DSCRAPER_IMAGES_STORE_FORMAT = 'ALL'
+  DSCRAPER_LOG_ENABLED = True
+  DSCRAPER_LOG_LEVEL = 'ERROR'
+  DSCRAPER_LOG_LIMIT = 5
+
+.. note::
+
+  Refer to GitHub for more comments on ``open_news/scraper/settings.py``.
 
 The ``SPIDER_MODULES`` setting is referencing the basic spiders of DDS and our ``scraper`` package where
 Scrapy will find the (yet to be written) spider module. For the ``ITEM_PIPELINES`` setting we have to
