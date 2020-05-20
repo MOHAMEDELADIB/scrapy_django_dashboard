@@ -64,7 +64,7 @@ Configuring Scrapy
 
 The common way to start a Scrapy project is to run: ::
 
-  scrapy startproject myscrapyproject
+  scrapy startproject my_scrapy_project
 
 This creates the project directory and boilerplate files. However, this approach will not save much time down the road and the boilerplate code can not directly interact with ``Scrapy Django Dashboard`` app without further manual configuration.
 
