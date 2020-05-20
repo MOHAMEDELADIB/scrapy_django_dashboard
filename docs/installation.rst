@@ -6,10 +6,10 @@ Installation
 
 .. _requirements:
 
-Requirements
-------------
+Prerequisites
+-------------
 
-The **prerequisites** for Scrapy Django Dashboard are as follows:
+The **prerequisites** for ``Scrapy Django Dashboard`` are as follows:
 
 * Python_ 3.7.7
 * Django_ 3.0.6
@@ -30,8 +30,6 @@ For **scraping images**, install `Pillow`_ (PIL fork) ``5.4.1``:
 
 For **javascript rendering**, install `Scrapy-Splash`_ ``0.7.2`` and :ref:`splash_optional`.
  
-Installation
-------------
 Clone the source code with git ::
 
     git clone https://github.com/0xboz/scrapy_django_dashboard.git
@@ -73,7 +71,7 @@ In case you need to exit from this virtual environment. ::
 Splash (Optional)
 ^^^^^^^^^^^^^^^^^
 
-`Scrapy Django Dashboard` supports `Splash`_ (A javascript rendering service).
+``Scrapy Django Dashboard`` supports `Splash`_ (A javascript rendering service).
 
 Install `Splash`_ (see `Splash Installation Instructions`_).
 
