@@ -23,7 +23,7 @@ Start a new Django project. ::
 
     (venv) django-admin startproject example_project
 
-This results in a ``example_project`` dir in the root dir with a structure like this: ::
+This results in a ``example_project/`` in the root directory with a structure like this: ::
 
     example_project/  
         example_project/
@@ -33,17 +33,17 @@ This results in a ``example_project`` dir in the root dir with a structure like 
             wsgi.py  
         manage.py  
 
-Now, let us move into ``example_project`` dir. ::
+Now, let us move into ``example_project/``. ::
 
     (venv) cd example_project
 
-Add ``scrapy_django_dashboard`` into ``INSTALLED_APPS`` in Django project settings. For more details, check out `example_project/settings.py`_.  
+Add ``scrapy_django_dashboard`` into ``INSTALLED_APPS`` in Django project settings. For more details, check out `example_project/example_project/settings.py`_.  
 
 Further, we create a demo app called ``open_news``. ::
 
     (venv) python manage.py startapp open_news
 
-This results in a ``open_news`` dir in ``example_project`` dir with a structure like this: ::
+This results in a ``open_news/`` in ``example_project/`` with a structure like this: ::
 
     open_news/  
         migrations/
@@ -66,9 +66,9 @@ The common way to start a Scrapy project is to run: ::
 
   scrapy startproject myscrapyproject
 
-This creates the project directory and boilerplate files. However, this approach will not save much time down the road and the boilerplate code can not directly interact with ``Scrapy Django Dashboard`` app without manual configuration.
+This creates the project directory and boilerplate files. However, this approach will not save much time down the road and the boilerplate code can not directly interact with ``Scrapy Django Dashboard`` app without further manual configuration.
 
-Therefore, the preferred way of starting a Scrapy project,  is to create ``scrapy.cfg`` in ``example_project`` dir (where ``open_news`` dir resides). Further, create ``scrapy`` dir inside of ``open_news`` dir. Add the following files according to this dir tree: ::
+Therefore, the preferred way is to create ``scrapy.cfg`` file in ``example_project/`` manually (where ``open_news/`` resides). Further, create ``scrapy/`` in ``open_news/``, add the following files according to this directory tree: ::
 
     example_project/  
         example_project/
@@ -97,10 +97,12 @@ Therefore, the preferred way of starting a Scrapy project,  is to create ``scrap
         
 .. note::
 
-  It is recommended to create a Scrapy project within the app of interest. To achieve this, create the necessary modules for the Scrapy project in a sub dir (named ``scraper``) of this app dir. 
+  It is recommended to create a Scrapy project within the app of interest. To achieve this, create the necessary modules for the Scrapy project in a sub directory (named ``scraper``) of this app. 
 
-Here is what ``scrapy.cfg`` looks like. Make changes for the app name and settings files accordingly. ::
+Here is what `example_project/example_project/scrapy.cfg`_ looks like. Make changes for the app name and settings files accordingly. ::
  
+  # example_project/example_project/scrapy.cfg
+  
   # Define open_news app scrapy settings
   [settings]
   default = open_news.scraper.settings
@@ -111,7 +113,9 @@ Here is what ``scrapy.cfg`` looks like. Make changes for the app name and settin
   project = open_news
 
 
-And this is your ``settings.py`` file. ::
+And this is the `example_project/example_project/open_news/scraper/settings.py`_ file. ::
+
+  # example_project/example_project/open_news/scraper/settings.py
 
   from __future__ import unicode_literals
   import os, sys
@@ -611,4 +615,7 @@ articles should be added to the DB.
 
 .. _`Django ORM <on_delete> by reading the documentation`: https://docs.djangoproject.com/en/3.0/ref/models/fields/#django.db.models.ForeignKey.on_delete
 .. _`a simple script`: https://github.com/0xboz/install_pyenv_on_debian
-.. _`example_project/settings.py`:  https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/example_project/settings.py
+.. _`example_project/example_project/settings.py`:  https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/example_project/settings.py
+
+.. _`example_project/example_project/scrapy.cfg`: https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/scrapy.cfg
+.. _`example_project/example_project/open_news/scraper/settings.py`: https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/open_news/scraper/settings.py
