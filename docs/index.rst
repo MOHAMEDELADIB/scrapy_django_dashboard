@@ -23,8 +23,8 @@ Features
 * Create and manage Scrapy_ spiders via Django admin dashboard
 * Support Scrapy_ regular expressions, processors, and pipelines (see `Scrapy Docs`_)
 * Support image/screenshot scraping
-* Spider scheduling via ``django-celery``
-* Existing items checker 
+* Schedule spiders via ``django-celery``
+* Check existing items 
 
 .. _`Django Dynamic Scraper (DDS) by Holger Drewes`: https://github.com/holgerd77/django-dynamic-scraper
 .. _Scrapy: http://www.scrapy.org 
