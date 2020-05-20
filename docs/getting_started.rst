@@ -4,7 +4,7 @@
 Getting Started
 ===============
 
-In this tutorial, we are going to use `example_project` to walk you through how to integrate `Scrapy Django Dashboard` into a typical `Django` project.
+In this tutorial, we are going to use ``example_project`` to walk you through how to integrate ``Scrapy Django Dashboard`` into a typical `Django` project.
 
 .. Note::
     This sample project has **ALREADY** been included in GitHub_ for your convenience. 
@@ -14,16 +14,16 @@ In this tutorial, we are going to use `example_project` to walk you through how 
 Example Project Summary
 -----------------------
 
-The code scrapes the news URLs, thumbnails and excerpts from the main page of WikiNews_. Further, it collects the news title from each news detail page. This might sound redundant at first, but it is a selected way to demonstrate the difference in ``Main Page`` and ``Detail Page`` as we deploy the spiders in a real project. 
+The code scrapes the news URLs, thumbnails and excerpts from the main page of WikiNews_. Further, it collects the news title from each news detail page. This might sound redundant at first, but it is a selected way to demonstrate the difference in ``Main Page (MP)`` and ``Detail Page (DP)`` as we deploy the spiders in a real project. 
 
 .. Note::
-  The following instructions assume you have already finished the :ref:`installation` successfully. `(venv)` means a virtual environment is activated in advance, which is considered as the best practice.
+  The following instructions assume you have already finished the :ref:`installation` successfully. ``(venv)`` means a virtual environment is activated in advance, which is considered as the best practice.
 
 Start a new Django project. ::
 
     (venv) django-admin startproject example_project
 
-This results in a `example_project` dir in the root dir with a structure like this: ::
+This results in a ``example_project`` dir in the root dir with a structure like this: ::
 
     example_project/  
         example_project/
@@ -33,18 +33,17 @@ This results in a `example_project` dir in the root dir with a structure like th
             wsgi.py  
         manage.py  
 
-Now, let us move into `example_project` dir. ::
+Now, let us move into ``example_project`` dir. ::
 
     (venv) cd example_project
 
 Add ``scrapy_django_dashboard`` into ``INSTALLED_APPS`` in Django project settings. For more details, check out `example_project/settings.py`_.  
 
+Further, we create a demo app called ``open_news``. ::
 
-Further, we create a demo app called `open_news`. ::
+    (venv) python manage.py startapp open_news
 
-    (venv)python manage.py startapp open_news
-
-This results in a `open_news` dir in `example_project` dir with a structure like this: ::
+This results in a ``open_news`` dir in ``example_project`` dir with a structure like this: ::
 
     open_news/  
         migrations/
@@ -56,7 +55,7 @@ This results in a `open_news` dir in `example_project` dir with a structure like
         tests.py
         views.py
 
-The next step is to set up Scrapy_ in `example_project`.
+The next step is to set up Scrapy_ for ``open_news`` app.
 
 .. _configuring_scrapy:
 
