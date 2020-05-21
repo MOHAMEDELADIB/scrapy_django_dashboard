@@ -60,20 +60,18 @@ class DjangoBaseSpider(CrawlSpider):
     
     def __init__(self, *args, **kwargs):
         msg = "Django settings used: {s}".format(s=os.environ.get("DJANGO_SETTINGS_MODULE"))
-        self.dds_logger = logging.getLogger('dds')
-        self.dds_logger.info(msg)
+        self.logger.info(msg)
         super(DjangoBaseSpider,  self).__init__(None, **kwargs)
         
         self._check_mandatory_vars()
         
 
     def _set_ref_object(self, ref_object_class, **kwargs):
-        self.dds_logger = logging.getLogger('dds')
         
         if not 'id' in kwargs:
             msg = "{cs}You have to provide the ID of the reference {type} object.{ce}".format(
                 type=ref_object_class.__name__, cs=self.bcolors["ERROR"], ce=self.bcolors["ENDC"])
-            self.dds_logger.error(msg)
+            self.logger.error(msg)
             self.output_usage_help()
             raise UsageError()
         try:
@@ -82,7 +80,7 @@ class DjangoBaseSpider(CrawlSpider):
             msg = "{cs}{type} object with ID {id} not found.{ce}".format(
                 id=kwargs['id'], type=ref_object_class.__name__,
                 cs=self.bcolors["ERROR"], ce=self.bcolors["ENDC"])
-            self.dds_logger.error(msg)
+            self.logger.error(msg)
             self.output_usage_help()
             raise UsageError()
 
@@ -117,20 +115,20 @@ class DjangoBaseSpider(CrawlSpider):
             self.conf['IMAGES_STORE_FORMAT'] = self.settings['DSCRAPER_IMAGES_STORE_FORMAT']
         if self.conf["IMAGES_STORE_FORMAT"] == 'FLAT':
             msg = "Use simplified FLAT images store format (save the original or one thumbnail image)"
-            self.dds_logger.info(msg)
+            self.logger.info(msg)
             if self.settings['DSCRAPER_IMAGES_THUMBS'] and len(self.settings['DSCRAPER_IMAGES_THUMBS']) > 0:
                 msg =  "IMAGES_THUMBS setting found, saving images as thumbnail images "
                 msg += "with size {size} (first entry)".format(
                     size=next(iter(self.settings['DSCRAPER_IMAGES_THUMBS'].keys())))
             else:
                 msg = "IMAGES_THUMBS setting not found, saving images with original size"
-            self.dds_logger.info(msg)
+            self.logger.info(msg)
         elif self.conf["IMAGES_STORE_FORMAT"] == 'ALL':
             msg = "Use ALL images store format (Scrapy behaviour, save both original and thumbnail images)"
-            self.dds_logger.info(msg)
+            self.logger.info(msg)
         else:
             msg = "Use THUMBS images store format (save only the thumbnail images)"
-            self.dds_logger.info(msg)
+            self.logger.info(msg)
             
         if self.settings['DSCRAPER_CUSTOM_PROCESSORS']:
             self.conf['CUSTOM_PROCESSORS'] = self.settings['DSCRAPER_CUSTOM_PROCESSORS']
@@ -162,7 +160,7 @@ class DjangoBaseSpider(CrawlSpider):
         if self.conf['RUN_TYPE'] == 'TASK':
             if not getattr(self, 'scheduler_runtime', None):
                 msg = "You have to provide a scheduler_runtime when running with run_type TASK."
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider(msg)
             msg = "SchedulerRuntime (" + str(self.scheduler_runtime) + ") found."
             self.log(msg, logging.INFO)
@@ -171,7 +169,7 @@ class DjangoBaseSpider(CrawlSpider):
             attr = getattr(self, var, None)
             if not attr:
                 msg = "Missing attribute {a}.".format(a=var)
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider(msg)
         
         if self.scraper.status == 'P' or self.scraper.status == 'I':
@@ -185,7 +183,7 @@ class DjangoBaseSpider(CrawlSpider):
             self.scraper.get_main_page_rpt()
         except ObjectDoesNotExist:
             msg = "Scraper must have exactly one main page request page type!"
-            self.dds_logger.error(msg)
+            self.logger.error(msg)
             raise CloseSpider()
         
         no_fp_rpt = True
@@ -204,11 +202,11 @@ class DjangoBaseSpider(CrawlSpider):
                     headers = json.loads(rpt.headers)
                 except ValueError:
                     msg = "Incorrect HTTP header attribute ({a}): not a valid JSON dict!".format(a=rpt.page_type)
-                    self.dds_logger.error(msg)
+                    self.logger.error(msg)
                     raise CloseSpider()
                 if not isinstance(headers, dict):
                     msg = "Incorrect HTTP header attribute ({a}): not a valid JSON dict!".format(a=rpt.page_type)
-                    self.dds_logger.error(msg)
+                    self.logger.error(msg)
                     raise CloseSpider()
                 pt_dict['headers'] = headers
 
@@ -220,11 +218,11 @@ class DjangoBaseSpider(CrawlSpider):
                     cookies = json.loads(rpt.cookies)
                 except ValueError:
                     msg = "Incorrect cookies attribute ({a}): not a valid JSON dict!".format(a=rpt.page_type)
-                    self.dds_logger.error(msg)
+                    self.logger.error(msg)
                     raise CloseSpider()
                 if not isinstance(cookies, dict):
                     msg = "Incorrect cookies attribute ({a}): not a valid JSON dict!".format(a=rpt.page_type)
-                    self.dds_logger.error(msg)
+                    self.logger.error(msg)
                     raise CloseSpider()
                 pt_dict['cookies'] = cookies
 
@@ -233,11 +231,11 @@ class DjangoBaseSpider(CrawlSpider):
                     meta = json.loads(rpt.meta)
                 except ValueError:
                     msg = "Incorrect meta attribute ({a}): not a valid JSON dict!".format(a=rpt.page_type)
-                    self.dds_logger.error(msg)
+                    self.logger.error(msg)
                     raise CloseSpider()
                 if not isinstance(meta, dict):
                     msg = "Incorrect meta attribute ({a}): not a valid JSON dict!".format(a=rpt.page_type)
-                    self.dds_logger.error(msg)
+                    self.logger.error(msg)
                     raise CloseSpider()
                 pt_dict['meta'] = meta
         if no_fp_rpt:
@@ -322,6 +320,6 @@ class DjangoBaseSpider(CrawlSpider):
                     for item in items:
                         item.delete()
         
-        self.dds_logger.log(level, message)
+        self.logger.log(level, message)
         
     

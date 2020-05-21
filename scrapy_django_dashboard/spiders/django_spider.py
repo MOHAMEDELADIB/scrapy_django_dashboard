@@ -101,7 +101,7 @@ class DjangoSpider(DjangoBaseSpider):
             '',
         )
         for out_str in out:
-            self.dds_logger.info(out_str)
+            self.logger.info(out_str)
     
 
     def _set_request_kwargs(self):
@@ -112,11 +112,11 @@ class DjangoSpider(DjangoBaseSpider):
                     form_data = json.loads(rpt.form_data)
                 except ValueError:
                     msg = "Incorrect form_data attribute ({pt}): not a valid JSON dict!".format(pt=rpt.page_type)
-                    self.dds_logger.error(msg)
+                    self.logger.error(msg)
                     raise CloseSpider()
                 if not isinstance(form_data, dict):
                     msg = "Incorrect form_data attribute ({pt}): not a valid JSON dict!".format(pt=rpt.page_type)
-                    self.dds_logger.error(msg)
+                    self.logger.error(msg)
                     raise CloseSpider()
 
 
@@ -130,7 +130,7 @@ class DjangoSpider(DjangoBaseSpider):
                 self.conf['MAX_ITEMS_READ'] = int(kwargs['max_items_read'])
             except ValueError:
                 msg = "You have to provide an integer value as max_items_read parameter!"
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
             if len(log_msg) > 0:
                 log_msg += ", "
@@ -145,7 +145,7 @@ class DjangoSpider(DjangoBaseSpider):
                 self.conf['MAX_ITEMS_SAVE'] = int(kwargs['max_items_save'])
             except ValueError:
                 msg = "You have to provide an integer value as max_items_save parameter!"
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
             if len(log_msg) > 0:
                 log_msg += ", "
@@ -160,7 +160,7 @@ class DjangoSpider(DjangoBaseSpider):
                 self.conf['MAX_PAGES_READ'] = int(kwargs['max_pages_read'])
             except ValueError:
                 msg = "You have to provide an integer value as max_pages_read parameter!"
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
             if len(log_msg) > 0:
                 log_msg += ", "
@@ -189,7 +189,7 @@ class DjangoSpider(DjangoBaseSpider):
                 self.conf['NUM_PAGES_FOLLOW'] = int(kwargs['num_pages_follow'])
             except ValueError:
                 msg = "You have to provide an integer value as num_pages_follow parameter!"
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
             if len(log_msg) > 0:
                 log_msg += ", "
@@ -204,7 +204,7 @@ class DjangoSpider(DjangoBaseSpider):
                 self.conf['OUTPUT_NUM_MP_RESPONSE_BODIES'] = int(kwargs['output_num_mp_response_bodies'])
             except ValueError:
                 msg = "You have to provide an integer value as output_num_mp_response_bodies parameter!"
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
             if len(log_msg) > 0:
                 log_msg += ", "
@@ -219,7 +219,7 @@ class DjangoSpider(DjangoBaseSpider):
                 self.conf['OUTPUT_NUM_DP_RESPONSE_BODIES'] = int(kwargs['output_num_dp_response_bodies'])
             except ValueError:
                 msg = "You have to provide an integer value as output_num_dp_response_bodies parameter!"
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
             if len(log_msg) > 0:
                 log_msg += ", "
@@ -242,7 +242,7 @@ class DjangoSpider(DjangoBaseSpider):
                 index += 1
             if not exists:
                 msg = "The provided start page doesn't exist in the range of page values!"
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
         
         if self.conf['END_PAGE']:
@@ -256,7 +256,7 @@ class DjangoSpider(DjangoBaseSpider):
                 index += 1
             if not exists:
                 msg = "The provided end page doesn't exist in the range of page values!"
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
         
         return pages
@@ -268,7 +268,7 @@ class DjangoSpider(DjangoBaseSpider):
         if self.scraper.pagination_type in ['R', 'F',]:
             if not self.scraper.pagination_page_replace:
                 msg = 'Please provide a pagination_page_replace context corresponding to pagination_type!'
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
         
         if self.scraper.pagination_type == 'R':
@@ -282,7 +282,7 @@ class DjangoSpider(DjangoBaseSpider):
                 msg = 'Pagination_page_replace for pagination_type "RANGE_FUNCT" ' +\
                       'has to be provided as python range function arguments ' +\
                       '[start], stop[, step] (e.g. "1, 50, 10", no brackets)!'
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
             pages = self.limit_page_nums(pages)
         
@@ -294,7 +294,7 @@ class DjangoSpider(DjangoBaseSpider):
             except:
                 msg = 'Wrong pagination_page_replace format for pagination_type "FREE_LIST", ' +\
                       "Syntax: 'Replace string 1', 'Another replace string 2', 'A number 3', ..."
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
             pages = self.limit_page_nums(pages)
         
@@ -348,13 +348,13 @@ class DjangoSpider(DjangoBaseSpider):
     
     
     def _log_page_info(self, page_num, follow_page_num, url, rpt, form_data, kwargs):
-        self.dds_logger.info('')
-        self.dds_logger.info(self.bcolors['BOLD'] + '======================================================================================' + self.bcolors['ENDC'])
+        self.logger.info('')
+        self.logger.info(self.bcolors['BOLD'] + '======================================================================================' + self.bcolors['ENDC'])
         self.struct_log("{es}{es2}Scraping data from page {p}({fp}).{ec}{ec}".format(
             p=page_num, fp=follow_page_num, es=self.bcolors['BOLD'], es2=self.bcolors['HEADER'], ec=self.bcolors['ENDC']))
         self.struct_log("URL     : {url}".format(url=url))
         self._log_request_info(rpt, form_data, kwargs)
-        self.dds_logger.info(self.bcolors['BOLD'] + '======================================================================================' + self.bcolors['ENDC'])
+        self.logger.info(self.bcolors['BOLD'] + '======================================================================================' + self.bcolors['ENDC'])
     
     
     def start_requests(self):
@@ -638,7 +638,7 @@ class DjangoSpider(DjangoBaseSpider):
                     jsonpath_expr = parse(base_elem.x_path)
                 except JsonPathLexerError:
                     msg = "JsonPath for base elem could not be processed!"
-                    self.dds_logger.error(msg)
+                    self.logger.error(msg)
                     raise CloseSpider()
                 base_objects = [match.value for match in jsonpath_expr.find(json_resp)]
                 if len(base_objects) > 0:
@@ -659,11 +659,11 @@ class DjangoSpider(DjangoBaseSpider):
             item_num = self.items_read_count + 1
             self.tmp_non_db_results[item_num] = {}
             page_str = str(page_num) + '(' + str(follow_page_num) + ')'
-            self.dds_logger.info("")
-            self.dds_logger.info(self.bcolors['BOLD'] + '--------------------------------------------------------------------------------------' + self.bcolors['ENDC'])
+            self.logger.info("")
+            self.logger.info(self.bcolors['BOLD'] + '--------------------------------------------------------------------------------------' + self.bcolors['ENDC'])
             self.struct_log("{cs}Starting to crawl item {i} from page {p}.{ce}".format(
                 i=str(item_num), p=page_str, cs=self.bcolors["HEADER"], ce=self.bcolors["ENDC"]))
-            self.dds_logger.info(self.bcolors['BOLD'] + '--------------------------------------------------------------------------------------' + self.bcolors['ENDC'])
+            self.logger.info(self.bcolors['BOLD'] + '--------------------------------------------------------------------------------------' + self.bcolors['ENDC'])
             item = self.parse_item(response, obj, rpt.page_type, item_num)
             item._dds_item_page = page
             item._dds_item_page_num = page_num
