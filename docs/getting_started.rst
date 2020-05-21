@@ -160,110 +160,117 @@ And this is the `example_project/example_project/open_news/scraper/settings.py`_
 
 The ``SPIDER_MODULES`` is a list of the spider modules of ``Scrapy Django Dashboard`` app and ``scraper`` package where Scrapy will look for spiders. In ``ITEM_PIPELINES``, ``scrapy_django_dashboard.pipelines.DjangoImagesPipeline``, a sub-class of ``scrapy.pipelines.images.ImagesPipeline``, enables scraping image media files; ``scrapy_django_dashboard.pipelines.ValidationPipeline`` checks the mandatory attributes and prevents duplicate entries by examining the unique key (the url attribute in our example).  
 
-.. _creatingdjangomodels:
+.. _creating_django_models:
 
-Creating your Django models
-===========================
+Creating Django Models
+----------------------
 
-Create your model classes
--------------------------
+In a Django app, we need to create at least *two model classes*. The first class stores the scraped data (``Articles`` in our example), and the second one (``NewsWebsite`` in our example) servers a reference model class defining the origin/category/topic where the scraped items belong to. 
 
-When you want to build a Django app using Django Dynamic Scraper to fill up your models with data you have
-to provide *two model classes*. The *first class* stores your scraped data, in our news example this is a
-class called ``Article`` storing articles scraped from different news websites. 
-The *second class* is a reference class for this first model class, defining where
-the scraped items belong to. Often this class will represent a website, but it could also represent a 
-category, a topic or something similar. In our news example we call the class ``NewsWebsite``. Below is the
-code for this two model classes::
+Here is `example_project/example_project/open_news/model.py`_ ::
+
+  from __future__ import unicode_literals
 
   from django.db import models
-  from dynamic_scraper.models import Scraper, SchedulerRuntime
+  from django.db.models.signals import pre_delete
+  from django.dispatch import receiver
   from scrapy_djangoitem import DjangoItem
-  
-  
+  from scrapy_django_dashboard.models import Scraper, SchedulerRuntime
+  from six import python_2_unicode_compatible
+
+  @python_2_unicode_compatible
   class NewsWebsite(models.Model):
       name = models.CharField(max_length=200)
       url = models.URLField()
       scraper = models.ForeignKey(Scraper, blank=True, null=True, on_delete=models.SET_NULL)
       scraper_runtime = models.ForeignKey(SchedulerRuntime, blank=True, null=True, on_delete=models.SET_NULL)
       
-      def __unicode__(self):
+      def __str__(self):
           return self.name
-  
-  
+
+  @python_2_unicode_compatible
   class Article(models.Model):
       title = models.CharField(max_length=200)
-      news_website = models.ForeignKey(NewsWebsite) 
+      news_website = models.ForeignKey(NewsWebsite, on_delete=models.SET_NULL)  
       description = models.TextField(blank=True)
-      url = models.URLField()
+      url = models.URLField(blank=True)
+      thumbnail = models.CharField(max_length=200, blank=True)
       checker_runtime = models.ForeignKey(SchedulerRuntime, blank=True, null=True, on_delete=models.SET_NULL)
       
-      def __unicode__(self):
+      def __str__(self):
           return self.title
-  
-  
+
   class ArticleItem(DjangoItem):
       django_model = Article
 
-As you can see, there are some foreign key fields defined in the models referencing DDS models.
-The ``NewsWebsite`` class has a reference to the :ref:`scraper` DDS model, which contains the main
-scraper with information about how to scrape the attributes of the article objects. The ``scraper_runtime``
-field is a reference to the :ref:`scheduler_runtime` class from the DDS models. An object of this class stores 
-scheduling information, in this case information about when to run a news website scraper for the next time. 
-The ``NewsWebsite`` class also has to provide the url to be used during the scraping process. You can either
-use (if existing) the representative url field of the model class, which is pointing to the nicely-layouted
-overview news page also visited by the user. In this case we are choosing this way with taking the ``url``
-attribute of the model class as the scrape url. However, it often makes sense to provide a dedicated ``scrape_url``
-(you can name the attribute freely) field for cases, when the representative url differs from the scrape url
-(e.g. if list content is loaded via ajax, or if you want to use another format of the content - e.g. the rss
-feed - for scraping).
-
-The ``Article`` class to store scraped news articles also has a reference to the :ref:`scheduler_runtime` DDS
-model class called ``checker_runtime``. In this case the scheduling object holds information about the next 
-existance check (using the ``url`` field from ``Article``) to evaluate if the news article
-still exists or if it can be deleted (see :ref:`item_checkers`).
-
-Last but not least: Django Dynamic Scraper uses the DjangoItem_ class from Scrapy for
-being able to directly store the scraped data into the Django DB. You can store the item class 
-(here: ``ArticleItem``) telling Scrapy which model class to use for storing the data directly underneath the
-associated model class.
-
-.. note::
-   For having a loose coupling between your runtime objects and your domain model objects you should declare
-   the foreign keys to the DDS objects with the ``blank=True, null=True, on_delete=models.SET_NULL``
-   field options. This will prevent a cascading delete of your reference object as well as the associated
-   scraped objects when a DDS object is deleted accidentally.
-
-Deletion of objects
--------------------
-
-If you delete model objects via the Django admin interface, the runtime objects are not
-deleted as well. If you want this to happen, you can use Django's 
-`pre_delete signals <https://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods>`_
-in your ``models.py`` to delete e.g. the ``checker_runtime`` when deleting an article::
-
   @receiver(pre_delete)
   def pre_delete_handler(sender, instance, using, **kwargs):
-      ....
-      
+      if isinstance(instance, NewsWebsite):
+          if instance.scraper_runtime:
+              instance.scraper_runtime.delete()
+    
       if isinstance(instance, Article):
           if instance.checker_runtime:
               instance.checker_runtime.delete()
-              
-  pre_delete.connect(pre_delete_handler)
+
+We have defined some foreign key fields referencing ``Scrapy Django Dashboard`` models. The ``NewsWebsite`` class refers to the :ref:`scraper` model, which contains the main scraper with information about how to scrape the attributes of the article objects. The ``scraper_runtime`` field is a reference to the :ref:`scheduler_runtime` class from ``Scrapy Django Dashboard`` models. This object stores the scraper schedules. 
+
+The ``NewsWebsite`` class also has to provide the url to be used during the scraping process. You can either use (if existing) the representative url field of the model class, which is pointing to the nicely-layouted overview news page also visited by the user. In this case we are choosing this way with taking the ``url`` attribute of the model class as the scrape url. However, it often makes sense to provide a dedicated ``scrape_url`` (you can name the attribute freely) field for cases, when the representative url differs from the scrape url (e.g. if list content is loaded via ajax, or if you want to use another format of the content - e.g. the rss feed - for scraping).
+
+The ``Article`` model class has a class attribute called ``checker_runtime``, a reference to :ref:`scheduler_runtime` ``Scrapy Django Dashboard`` model class. This scheduling object holds information about the next check and evaluates if the news article still exists or it can be deleted (see :ref:`item_checkers`) by using the ``url`` of ``Article``.
+
+Last but not least, ``Scrapy Django Dashboard`` uses the DjangoItem_ class from Scrapy to store the scraped data into the database.
+
+.. note::
+   To have a loose coupling between the runtime objects and the domain model objects, we declare the foreign keys to the ``Scrapy Django Dashboard`` objects with ``blank=True, null=True, on_delete=models.SET_NULL``. This prevents the reference object and the associated scraped objects from being deleted when we remove a ``Scrapy Django Dashboard`` object by accident.
+
+.. note::
+
+  When we delete model objects via the Django admin dashboard, the runtime objects are not removed. 
+
+  To enable this feature,use Django's `pre_delete signals <https://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods>`_ in your ``models.py`` to delete e.g. the ``checker_runtime`` when deleting an article ::
+
+    @receiver(pre_delete)
+    def pre_delete_handler(sender, instance, using, **kwargs):
+        ....
+        
+        if isinstance(instance, Article):
+            if instance.checker_runtime:
+                instance.checker_runtime.delete()
+                
+    pre_delete.connect(pre_delete_handler)
+
+.. _database_migration_authorization:
+
+Database Migration & Authorization
+----------------------------------
+
+Now, we head back to ``example_project/`` (where ``manage.py`` resides). When dealing a custom app (``open_news`` in our example), we need make database migrations: ::
+
+  (venv) python manage.py makemigrations open_news
+  (venv) python migrate
+
+This creates a SQLite database file in ``example_project/example_project/``, called ``open_news.db``. Feel free to change db location by changing ``example_project/example_project/settings.py`` as needed.
+
+We also need an account to log into Django admin dashboard. ::
+
+  (venv) python manage.py createsuperuser
+
+Fill out username, email and password. Next, power up the development server and load Django admin page. ::
+
+  (venv) python manage.py runserver
+
+The default admin page should be ``http://localhost:8000/admin``.
 
 
-.. _DjangoItem: https://scrapy.readthedocs.org/en/latest/topics/djangoitem.html
+.. _defining_item_object_class:
 
-.. _defining_scraped_object_class:
+Defining Item Object Class
+--------------------------
 
-Defining the object to be scraped
-=================================
+Now, log into Django admin dashboard, it should look similar to this:
 
-If you have done everything right up till now and even synced your DB :-) your Django admin should look 
-similar to the following screenshot below, at least if you follow the example project:
-
-.. image:: images/screenshot_django-admin_overview.png
+.. image:: images/screenshot_django_admin_overview.png
 
 Before being able to create scrapers in Django Dynamic Scraper you have to define which parts of the Django
 model class you defined above should be filled by your scraper. This is done via creating a new 
@@ -614,3 +621,7 @@ articles should be added to the DB.
 
 .. _`example_project/example_project/scrapy.cfg`: https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/scrapy.cfg
 .. _`example_project/example_project/open_news/scraper/settings.py`: https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/open_news/scraper/settings.py
+
+.. _`example_project/example_project/open_news/model.py`: https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/open_news/models.py
+
+.. _DjangoItem: https://scrapy.readthedocs.org/en/latest/topics/djangoitem.html
