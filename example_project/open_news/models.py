@@ -1,11 +1,11 @@
-#Stage 2 Update (Python 3)
-from __future__ import unicode_literals
-from six import python_2_unicode_compatible  # https://stackoverflow.com/a/60720922
+from __future__ import unicode_literals  #Stage 2 Update (Python 3)
+
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from scrapy_djangoitem import DjangoItem
 from scrapy_django_dashboard.models import Scraper, SchedulerRuntime
+from six import python_2_unicode_compatible  # https://stackoverflow.com/a/60720922
 
 
 @python_2_unicode_compatible
@@ -22,7 +22,7 @@ class NewsWebsite(models.Model):
 @python_2_unicode_compatible
 class Article(models.Model):
     title = models.CharField(max_length=200)
-    news_website = models.ForeignKey(NewsWebsite, on_delete=models.DO_NOTHING)  # https://stackoverflow.com/a/44026807
+    news_website = models.ForeignKey(NewsWebsite, blank=True, null=True, on_delete=models.SET_NULL)  # https://stackoverflow.com/a/44026807
     description = models.TextField(blank=True)
     url = models.URLField(blank=True)
     thumbnail = models.CharField(max_length=200, blank=True)
