@@ -29,7 +29,12 @@ Find more about `Django ORM <on_delete> by reading the documentation`_.
 For **scraping images**, install `Pillow`_ (PIL fork) ``5.4.1``:
 
 For **javascript rendering**, install `Scrapy-Splash`_ ``0.7.2`` and :ref:`splash_optional`.
- 
+
+.. _manual_installation:
+
+Manual Installation
+-------------------
+
 Clone the source code with git ::
 
     git clone https://github.com/0xboz/scrapy_django_dashboard.git
