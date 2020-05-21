@@ -37,7 +37,6 @@ SPIDER_MODULES = [
 ]
 
 # Use a very common UA
-# USER_AGENT = '{b}/{v}'.format(b=BOT_NAME, v='1.0')
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
 
 # A dict containing the item pipelines to use, and their orders. 
@@ -50,7 +49,8 @@ ITEM_PIPELINES = {
 }
 
 # Enabling your Media Pipeline
-# Place 'scrapy_django_dashboard.pipelines.DjangoImagesPipeline' into `ITEM_PIPELINES`
+# `scrapy_django_dashboard.pipelines.DjangoImagesPipeline` a sub-class of `scrapy.pipelines.images.ImagesPipeline`
+# Place `scrapy_django_dashboard.pipelines.DjangoImagesPipeline` into `ITEM_PIPELINES`
 # Configure the target storage setting to a valid value that will be used for storing the downloaded images. Otherwise the pipeline will remain disabled, even if you include it in the `ITEM_PIPELINES` setting.
 IMAGES_STORE = os.path.join(PROJECT_ROOT, '../thumbnails')
 # The Images Pipeline can automatically create thumbnails of the downloaded images.
