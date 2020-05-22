@@ -43,6 +43,13 @@ class DjangoSpider(DjangoBaseSpider):
     
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
+        """
+        This is the class method used by Scrapy to create your spiders.
+
+        This method sets the crawler and settings attributes in the new instance so they can be accessed later inside the spider’s code.
+
+        https://docs.scrapy.org/en/latest/topics/spiders.html#scrapy.spiders.Spider.from_crawler
+        """        
         spider = cls(*args, **kwargs)
         spider._set_crawler(crawler)
         
@@ -609,6 +616,13 @@ class DjangoSpider(DjangoBaseSpider):
     
 
     def parse(self, response):
+        """
+        This could cause a problem.
+
+        When writing crawl spider rules, avoid using `parse` as callback, since the CrawlSpider uses the parse method itself to implement its logic. So if you override the `parse` method, the crawl spider will no longer work.
+
+        https://docs.scrapy.org/en/latest/topics/spiders.html#crawling-rules
+        """
         xs = Selector(response)
         base_objects = []
         base_elem = self.scraper.get_base_elem()
@@ -711,7 +725,10 @@ class DjangoSpider(DjangoBaseSpider):
                             self.log(msg, logging.DEBUG)
                             self.log("URL before: " + url_before, logging.DEBUG)
                             self.log("URL after : " + url, logging.DEBUG)
-                        dp_rpt = self.scraper.get_rpt_for_scraped_obj_attr(url_elem.scraped_obj_attr)
+                        
+                        # A temp fix for mismatching DP number in `REQUEST PAGE TYPES` and `SCRAPER ELEMS`
+                        dp_rpt = self.scraper.get_rpt_for_scraped_obj_attr(url_elem.scraped_obj_attr.id-1)
+                        
                         kwargs = self.dp_request_kwargs[dp_rpt.page_type].copy()
                         
                         if 'meta' not in kwargs:
