@@ -67,6 +67,9 @@ class DjangoBaseSpider(CrawlSpider):
         
 
     def _set_ref_object(self, ref_object_class, **kwargs):
+        """
+        Set the reference model class (e.g. the origin/category/topic), which the spider class belongs to.  
+        """
         
         if not 'id' in kwargs:
             msg = "{cs}You have to provide the ID of the reference {type} object.{ce}".format(
@@ -105,6 +108,11 @@ class DjangoBaseSpider(CrawlSpider):
             log_msg += "do_action " + str(self.conf['DO_ACTION'])
         else:
             self.log("Attribute do_action not set, not saving to Django DB.", logging.INFO)
+
+        # self.settings - configuration for running the spider
+        # https://docs.scrapy.org/en/latest/topics/settings.html#topics-settings
+        # One of the common ways to populate settings is using project setting module
+        # i.e. settings.py
         
         if self.settings['DSCRAPER_SPLASH_ARGS']:
             self.conf['SPLASH_ARGS'] = self.settings['DSCRAPER_SPLASH_ARGS'] 
@@ -153,6 +161,7 @@ class DjangoBaseSpider(CrawlSpider):
         
         self.log("Configuration set: " + str(self.conf), logging.DEBUG)
         
+        # http://pydispatcher.sourceforge.net/
         dispatcher.connect(self.spider_closed, signal=signals.spider_closed)
 
 
