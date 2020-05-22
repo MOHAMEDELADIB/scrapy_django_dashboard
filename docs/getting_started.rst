@@ -83,6 +83,8 @@ In ``open_news`` app, we need to create at least *two model classes*. The first 
 
 Here is `example_project/example_project/open_news/model.py`_ ::
 
+  # example_project/example_project/open_news/model.py
+
   from __future__ import unicode_literals
   from django.db import models
   from django.db.models.signals import pre_delete
@@ -200,6 +202,8 @@ Therefore, **the preferred way** is to create ``scrapy.cfg`` file in ``example_p
 
 Here is what `example_project/example_project/scrapy.cfg`_ looks like. Make changes for the app name and settings files accordingly. ::
  
+  # example_project/example_project/scrapy.cfg
+
   # Define open_news app scrapy settings
   [settings]
   default = open_news.scraper.settings
@@ -209,7 +213,9 @@ Here is what `example_project/example_project/scrapy.cfg`_ looks like. Make chan
   url = http://localhost:6800/
   project = open_news
 
-And this is the `example_project/example_project/open_news/scraper/settings.py`_ file. ::
+And this is the `example_project/example_project/open_news/scraper/settings.py`_. ::
+
+  # example_project/example_project/open_news/scraper/settings.py
 
   from __future__ import unicode_literals
   import os, sys
