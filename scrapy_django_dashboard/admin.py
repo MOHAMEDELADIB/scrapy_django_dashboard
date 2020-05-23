@@ -149,11 +149,11 @@ class ScraperAdmin(admin.ModelAdmin):
     ]
     fieldsets = (
         (None, {
-            'fields': ('name', 'status', 'work_status',)
+            'fields': ('name','scraped_obj_class', 'status', 'work_status',)
         }),
         ('General settings', {
             'classes': ('grp-collapse grp-closed',),
-            'fields': ( 'scraped_obj_class', 'owner', \
+            'fields': ( 'owner', \
                 'max_items_read', 'max_items_save')
         }),
         ('Pagination', {
