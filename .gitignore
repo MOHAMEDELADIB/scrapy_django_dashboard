@@ -18,6 +18,8 @@ dist
 build
 docs/_build
 
+requirements_dev.txt
+
 # pyenv
 .python-version
 
