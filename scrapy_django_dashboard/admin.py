@@ -123,13 +123,19 @@ class ScraperElemAdminForm(forms.ModelForm):
 
 class ScraperElemInline(admin.TabularInline):
     model = ScraperElem
+    classes = ('grp-collapse grp-open',)
     form = ScraperElemAdminForm
-    extra = 3
+    extra = 1
 
     
 class ScraperAdmin(admin.ModelAdmin):
+
     class Media(object):
-        js = ("js/admin_custom.js",)
+        # js = ("admin/js/admin_custom.js",)
+        css = {
+            'all': ('admin/css/custom.css',)
+        }
+
     list_display = ('id', 'name', 'scraped_obj_class', 'status', 'work_status', \
         'owner', 'last_scraper_save_', 'last_checker_delete_',)
     list_display_links = ('name',)
@@ -146,27 +152,29 @@ class ScraperAdmin(admin.ModelAdmin):
             'fields': ('name', 'status', 'work_status',)
         }),
         ('General settings', {
-            'classes': ('collapse',),
+            'classes': ('grp-collapse grp-closed',),
             'fields': ( 'scraped_obj_class', 'owner', \
                 'max_items_read', 'max_items_save')
         }),
-        (None, {
+        ('Pagination', {
+            'classes': ('grp-collapse grp-closed',),
             'fields': ('pagination_type',)
         }),
         ('First Layer Pagination (Static)', {
-            'classes': ('collapse',),
+            'classes': ('grp-collapse grp-closed',),
             'fields': ('pagination_on_start', 'pagination_append_str', 'pagination_page_replace',)
         }),
         ('Second Layer Pagination (Dynamic)', {
-            'classes': ('collapse',),
+            'classes': ('grp-collapse grp-closed',),
             'fields': ('follow_pages_url_xpath', 'follow_pages_page_xpath', 'num_pages_follow',)
         }),
         ('Monitoring', {
-            'classes': ('collapse',),
+            'classes': ('grp-collapse grp-closed',),
             'fields': ('last_scraper_save_alert_period', 'next_last_scraper_save_alert',
                 'last_checker_delete_alert_period', 'next_last_checker_delete_alert',)
         }),
-        (None, {
+        ('Comments', {
+            'classes': ('grp-collapse grp-closed',),
             'fields': ('comments',)
         }),
     )

@@ -1,0 +1,8 @@
+.vLargeTextField {
+    height: 4rem;
+}
+
+textarea,
+.vLargeTextField {
+    width: 250px;
+}
