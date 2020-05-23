@@ -118,18 +118,18 @@ class ValidationPipeline(object):
                 not elem.scraped_obj_attr.name in item or\
                 (elem.scraped_obj_attr.name in item and not item[elem.scraped_obj_attr.name])):
                 msg = "{cs}Item {id} dropped, mandatory elem {elem} missing!{ce}".format(
-                    id=item._dds_id_str, elem=elem.scraped_obj_attr.name, cs=spider.bcolors['ERROR'], ce=spider.bcolors['ENDC'])
+                    id=item._id_str, elem=elem.scraped_obj_attr.name, cs=spider.bcolors['ERROR'], ce=spider.bcolors['ENDC'])
                 spider.log(msg, logging.ERROR)
                 raise DropItem()
         
         if spider.conf['MAX_ITEMS_SAVE'] and spider.items_save_count >= spider.conf['MAX_ITEMS_SAVE']:
             spider.log("{cs}Max items save reached ({num}), item {id} not saved or further processed.{ce}".format(
-                num=str(spider.conf['MAX_ITEMS_SAVE']), id=item._dds_id_str, cs=spider.bcolors["INFO"], ce=spider.bcolors["ENDC"]), logging.INFO)
+                num=str(spider.conf['MAX_ITEMS_SAVE']), id=item._id_str, cs=spider.bcolors["INFO"], ce=spider.bcolors["ENDC"]), logging.INFO)
             raise DropItem()
         
         if not spider.conf['DO_ACTION']:
             spider.log("{cs}Item {id} not saved to Django DB (Test Mode or File Output).{ce}".format(
-                id=item._dds_id_str, cs=spider.bcolors["INFO"], ce=spider.bcolors["ENDC"]), logging.WARNING)
+                id=item._id_str, cs=spider.bcolors["INFO"], ce=spider.bcolors["ENDC"]), logging.WARNING)
         else:
             if is_double:
                 standard_update_elems = spider.scraper.get_standard_update_elems()
@@ -150,12 +150,12 @@ class ValidationPipeline(object):
                     exist_object.save()
                     spider.action_successful = True
                     msg = "{cs}Item {id} already in DB, attributes updated: {attr_str}{ce}".format(
-                        id=item._dds_id_str, attr_str=updated_attribute_list, cs=spider.bcolors["OK"], ce=spider.bcolors["ENDC"])
+                        id=item._id_str, attr_str=updated_attribute_list, cs=spider.bcolors["OK"], ce=spider.bcolors["ENDC"])
                     spider.struct_log(msg)
                     raise DropItem()
                 else:
                     msg = "{cs}Double item {id}, not saved.{ce}".format(
-                        id=item._dds_id_str, cs=spider.bcolors["INFO"], ce=spider.bcolors["ENDC"])
+                        id=item._id_str, cs=spider.bcolors["INFO"], ce=spider.bcolors["ENDC"])
                     spider.logger.warning(msg)
                     raise DropItem()
             
