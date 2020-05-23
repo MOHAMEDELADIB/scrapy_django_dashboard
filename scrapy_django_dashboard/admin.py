@@ -5,6 +5,7 @@ from builtins import object
 from datetime import date
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django import forms
 from django.forms.models import BaseInlineFormSet
@@ -326,6 +327,8 @@ class LogAdmin(admin.ModelAdmin):
     def date_(self, instance):
         return instance.date.strftime('%Y-%m-%d %H:%M')
 
+
+admin.site.unregister(Group)
 
 admin.site.register(ScrapedObjClass, ScrapedObjClassAdmin)
 admin.site.register(Scraper, ScraperAdmin)
