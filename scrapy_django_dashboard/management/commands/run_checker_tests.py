@@ -70,7 +70,7 @@ class Command(BaseCommand):
                 from django.contrib.sites.models import Site
                 subject = Site.objects.get_current().name
             else:
-                subject = 'DDS Scraper Site'
+                subject = 'Scraper Site'
             subject += " - Errors while running checker configuration tests"
             
             mail_admins(subject, msg)

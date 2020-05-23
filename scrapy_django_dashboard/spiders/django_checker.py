@@ -48,14 +48,14 @@ class DjangoChecker(DjangoBaseSpider):
     def output_usage_help(self):
         out = (
             '',
-            'DDS Usage',
+            'Usage',
             '=========',
-            '  scrapy crawl [scrapy_options] CHECKERNAME -a id=REF_OBJECT_ID [dds_options]',
+            '  scrapy crawl [scrapy_options] CHECKERNAME -a id=REF_OBJECT_ID [options]',
             '',
             'Options',
             '-------',
             '-a do_action=(yes|no)                   Delete on checker success, default: no (Test Mode)',
-            '-L LOG_LEVEL (scrapy option)            Setting the log level for both Scrapy and DDS',
+            '-L LOG_LEVEL (scrapy option)            Setting the log level',
             '-a run_type=(TASK|SHELL)                Simulate task based checker run, default: SHELL',
             '-a output_response_body=(yes|no)        Output response body content for debugging',
             '',

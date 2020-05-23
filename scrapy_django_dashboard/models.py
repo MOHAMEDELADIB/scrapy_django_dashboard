@@ -312,7 +312,7 @@ class ScraperElem(models.Model):
     help_text = "Corresponding Request Page Types created for this scraper."
     # dynamic_scraper.ScraperElem.request_page_type: (fields.E009) 'max_length' is too small to fit the longest value in 'choices' (4 characters).
     request_page_type = models.CharField(max_length=4, choices=REQUEST_PAGE_TYPE_CHOICES, default="MP", help_text=help_text)
-    help_text = "Use the default processors (Scrapy TakeFirst, DDS string_strip) for convenience."
+    help_text = "Use the default processors (Scrapy TakeFirst, string_strip) for convenience."
     use_default_procs = models.BooleanField(default=True, help_text=help_text)
     help_text = 'Optional comma-separated list of processors used (e.g. "pre_url, post_string").'
     processors = models.TextField(blank=True, help_text=help_text)

@@ -72,7 +72,7 @@ class Command(BaseCommand):
                 from django.contrib.sites.models import Site
                 subject = Site.objects.get_current().name
             else:
-                subject = 'DDS Scraper Site'
+                subject = 'Scraper Site'
             subject += " - Last scraper save check for scraper(s) failed"
             
             mail_admins(subject, msg)

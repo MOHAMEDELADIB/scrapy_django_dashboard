@@ -88,14 +88,14 @@ class DjangoSpider(DjangoBaseSpider):
     def output_usage_help(self):
         out = (
             '',
-            'DDS Usage',
+            'Usage',
             '=========',
-            '  scrapy crawl [scrapy_options] SPIDERNAME -a id=REF_OBJECT_ID [dds_options]',
+            '  scrapy crawl [scrapy_options] SPIDERNAME -a id=REF_OBJECT_ID [options]',
             '',
             'Options',
             '-------',
             '-a do_action=(yes|no)                       Save output to DB, default: no (Test Mode or File Output)',
-            '-L LOG_LEVEL (scrapy option)                Setting the log level for both Scrapy and DDS',
+            '-L LOG_LEVEL (scrapy option)                Setting the log level',
             '-a run_type|rt=(TASK|SHELL)                 Simulate task based scraper run, default: SHELL',
             '-a max_items_read|mir=[Int]                 Limit number of items to read',
             '-a max_items_save|mis=[Int]                 Limit number of items to save',
@@ -679,11 +679,11 @@ class DjangoSpider(DjangoBaseSpider):
                 i=str(item_num), p=page_str, cs=self.bcolors["HEADER"], ce=self.bcolors["ENDC"]))
             self.logger.info(self.bcolors['BOLD'] + '--------------------------------------------------------------------------------------' + self.bcolors['ENDC'])
             item = self.parse_item(response, obj, rpt.page_type, item_num)
-            item._dds_item_page = page
-            item._dds_item_page_num = page_num
-            item._dds_item_follow_page_num = follow_page_num
-            item._dds_item_id = item_num
-            item._id_str = str(item._dds_item_page_num) + '(' + str(item._dds_item_follow_page_num) + ')-' + str(item._dds_item_id)
+            item._item_page = page
+            item._item_page_num = page_num
+            item._item_follow_page_num = follow_page_num
+            item._item_id = item_num
+            item._id_str = str(item._item_page_num) + '(' + str(item._item_follow_page_num) + ')-' + str(item._item_id)
             
             if item:
                 only_main_page_idfs = True
