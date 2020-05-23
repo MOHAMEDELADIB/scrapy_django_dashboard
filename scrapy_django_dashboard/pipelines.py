@@ -156,7 +156,7 @@ class ValidationPipeline(object):
                 else:
                     msg = "{cs}Double item {id}, not saved.{ce}".format(
                         id=item._dds_id_str, cs=spider.bcolors["INFO"], ce=spider.bcolors["ENDC"])
-                    spider.dds_logger.warning(msg)
+                    spider.logger.warning(msg)
                     raise DropItem()
             
             spider.items_save_count += 1

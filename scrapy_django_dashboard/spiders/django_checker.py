@@ -61,7 +61,7 @@ class DjangoChecker(DjangoBaseSpider):
             '',
         )
         for out_str in out:
-            self.dds_logger.info(out_str)
+            self.logger.info(out_str)
     
     
     def _set_config(self, **kwargs):
@@ -82,7 +82,7 @@ class DjangoChecker(DjangoBaseSpider):
         if self.scraper.checker_set.count() == 0:
             msg = '{cs}No checkers defined for scraper.{ce}'.format(
                 cs=self.bcolors["INFO"], ce=self.bcolors["ENDC"])
-            self.dds_logger.warning(msg)
+            self.logger.warning(msg)
             self.output_usage_help()
             raise CloseSpider(msg)
 
@@ -181,7 +181,7 @@ class DjangoChecker(DjangoBaseSpider):
             self.log("{cs}No 404 result ({c} checker type).{ce}".format(
                 c=str(checker), cs=self.bcolors["OK"], ce=self.bcolors["ENDC"]), logging.INFO)
             if self.conf['DO_ACTION']:
-                self.dds_logger.info("{cs}Item kept.{ce}".format(
+                self.logger.info("{cs}Item kept.{ce}".format(
                     cs=self.bcolors["OK"], ce=self.bcolors["ENDC"]))
             return
         if rpt.content_type == 'J':
@@ -190,7 +190,7 @@ class DjangoChecker(DjangoBaseSpider):
                 jsonpath_expr = parse(checker.checker_x_path)
             except JsonPathLexerError:
                 msg = "Invalid checker JSONPath ({c})!".format(c=str(checker))
-                self.dds_logger.error(msg)
+                self.logger.error(msg)
                 raise CloseSpider()
             test_select = [match.value for match in jsonpath_expr.find(json_resp)]
             #self.log(unicode(test_select), logging.INFO)
@@ -217,7 +217,7 @@ class DjangoChecker(DjangoBaseSpider):
             self.log("{cs}XPath result string not found ({c}).{ce}".format(
                 c=str(checker), cs=self.bcolors["OK"], ce=self.bcolors["ENDC"]), logging.INFO)
             if self.conf['DO_ACTION']:
-                self.dds_logger.info("{cs}Item kept.{ce}".format(
+                self.logger.info("{cs}Item kept.{ce}".format(
                     cs=self.bcolors["OK"], ce=self.bcolors["ENDC"]))
             return
     
