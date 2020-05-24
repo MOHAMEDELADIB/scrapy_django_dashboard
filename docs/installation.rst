@@ -11,20 +11,23 @@ Prerequisites
 
 The **prerequisites** for ``Scrapy Django Dashboard`` are as follows:
 
-* Python_ 3.7.7
-* Django_ 3.0.6
-* Scrapy_ 2.1.0
-* `scrapy-djangoitem`_ 1.1.1
-* `Python JSONPath RW`_  1.4.0
-* `Python-Future`_ 0.17.1 (Easy, clean, reliable Python 2/3 compatibility)
+* Python_ ``3.7.7``
+* Django_ ``3.0.6``
+* `Django Grappelli`_ ``2.14.2``
+* Scrapy_ ``2.1.0``
+* `scrapy-djangoitem`_ ``1.1.1``
+* `Python JSONPath RW`_  ``1.4.0``
+* `Python-Future`_ ``0.17.1`` (Easy, clean, reliable Python 2/3 compatibility)
 
 For **scheduling mechanism**, install `django-celery`_ ``3.3.1``:
 
-Due to the compatibility issues, the selected versions of `celery`_ ``3.1``, `kombu`_ ``3.0.37`` and `django-celery`_ ``3.3.1`` reside in root dir. I have also made a quick fix in `kombu`_ ``3.0.37`` package to circumvent this well known issue. ::
-    
-    TypeError: __init__() missing 1 required positional argument: 'on_delete'
+.. note::
 
-Find more about `Django ORM <on_delete> by reading the documentation`_.
+    Due to the compatibility issues, the selected versions of `celery`_ ``3.1``, `kombu`_ ``3.0.37`` and `django-celery`_ ``3.3.1`` reside in root dir. I have also made a quick fix in `kombu`_ ``3.0.37`` package to circumvent this well known issue. ::
+        
+        TypeError: __init__() missing 1 required positional argument: 'on_delete'
+
+    Find more about `Django ORM <on_delete> by reading the documentation`_.
 
 For **scraping images**, install `Pillow`_ (PIL fork) ``5.4.1``:
 
@@ -96,11 +99,13 @@ To customize ``Splash`` args, use ``DSCRAPER_SPLASH_ARGS`` (see: :ref:`settings`
 ``Splash`` can be later activated in `Django` Admin dashboard.
 
 .. note::
-   Resources needed for completely rendering a website on your scraping machine are vastly larger then for just requesting/working on the plain HTML text without further processing, so make use of ``Splash`` capability on when needed!
+
+   Resources needed for rendering a website are larger than those for working with the plain HTML text, turn on ``Splash`` feature when necessary.
 
 .. _Python: https://www.python.org/
-.. _Scrapy: http://www.scrapy.org/
 .. _Django: https://www.djangoproject.com/
+.. _Scrapy: http://www.scrapy.org/
+.. _`Django Grappelli`: https://github.com/sehmaschine/django-grappelli
 .. _`scrapy-djangoitem`: https://github.com/scrapy-plugins/scrapy-djangoitem
 .. _`Python JSONPath RW`:  https://github.com/kennknowles/python-jsonpath-rw
 .. _`Python-Future`: http://python-future.org/
