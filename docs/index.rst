@@ -10,6 +10,7 @@ Scrapy Django Dashboard is a fork of `Django Dynamic Scraper (DDS) by Holger Dre
    * Python ``3.7.7``
    * Django ``3.0.6``
    * Scrapy ``2.1.0``
+   * Django Grappelli (Grid-based Django admin dashboard extension) ``2.14.2``
    * Javascript rendering
    * Scraping ``JSON`` content
    * More flexible ID and detail page URL(s) concept
