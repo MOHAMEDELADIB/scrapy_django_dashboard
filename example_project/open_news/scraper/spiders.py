@@ -4,7 +4,7 @@ from open_news.models import NewsWebsite, Article, ArticleItem
 
 
 class ArticleSpider(DjangoSpider):
-    
+
     name = 'article_spider'
 
     def __init__(self, *args, **kwargs):
