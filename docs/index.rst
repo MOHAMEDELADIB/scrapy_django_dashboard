@@ -36,7 +36,7 @@ User Manual
 -----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    
    introduction
    installation
