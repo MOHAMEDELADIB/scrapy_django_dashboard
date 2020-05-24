@@ -28,7 +28,7 @@ BOT_NAME = 'open_news'
 # https://docs.scrapy.org/en/latest/topics/settings.html#log-stdout
 # LOG_STDOUT = False 
 
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 
 # A list of modules where Scrapy will look for spiders.
 SPIDER_MODULES = [
