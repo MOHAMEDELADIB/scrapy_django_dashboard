@@ -4,16 +4,18 @@
 Getting Started
 ===============
 
-In this tutorial, we are going to use ``example_project`` to walk you through how to integrate ``Scrapy Django Dashboard`` into a typical `Django` project.
+In this tutorial, we are going to use ``example_project`` and its ``open_news`` app to walk you through how to integrate ``Scrapy Django Dashboard`` into a typical Django project.
 
-This tutorial can be roughly divided into two parts: 
+The tutorial itself can be roughly divided into two parts: 
 
-  * Part 1. Set up Django project, app and Scrapy.
-  * Part 2. Create params in Django admin dashboard according to Part 1.
+  * :ref:`part_one`: Set up example project, open news app and a Scrapy spider.
+
+  * :ref:`part_two`: Create parameters in Django admin dashboard accordingly.
 
 .. Note::
-    GitHub_ source code has **ALREADY** included this sample project.
+    GitHub_ has **ALREADY** included the source code of this sample project.
 
+.. _GitHub: https://github.com/0xboz/scrapy_django_dashboard
 
 .. _project_summary:
 
@@ -22,20 +24,42 @@ Project Summary
 
 The code scrapes the news URLs, thumbnails and excerpts from the main page of WikiNews_. Further, it collects the news title from each news detail page. This might sound redundant at first, but it is a selected way to demonstrate the difference in ``Main Page (MP)`` and ``Detail Page (DP)`` as we deploy the spiders in a real project. 
 
+.. _Wikinews: http://en.wikinews.org/wiki/Main_Page
+
 .. Note::
-  The following instructions assume you have already finished the :ref:`installation` successfully. ``(venv)`` means a virtual environment is activated in advance, which is considered as the best practice.
+
+  The following instructions assume you have already finished the :ref:`installation` successfully. ``(venv)`` means a virtual environment is activated in advance, which is considered as the best practice when running the code without the potential breaking OS global packages.
+
+.. _part_one:
+
+PART ONE
+--------
+
+In Part One, we will mainly use prompt commands and a text editor to generate a minimal amount of boilerplate and other setting files manually. 
 
 
-.. _creating_django_project:
+.. _creating_example_project:
 
-Creating Django Project 
------------------------
+Creating Example Project 
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-Start a new Django project, by running this command: ::
+Run this command: ::
 
     (venv) django-admin startproject example_project
 
-This results in a ``example_project/`` in the root directory with a structure like this: ::
+.. note::
+
+  This might not be the best practice when starting a new Django project, according to The `Hitchhikers' Guide to Python`_, which suggests the following command instead to avoid repetitive paths by appending ``.`` at the end. ::
+
+    (venv) django-admin startproject example_project . 
+
+  However, this tutorial sticks with `the official Django Tutorial Part 1`_ for the sake of consistency.
+
+.. _`Hitchhikers' Guide to Python`: https://docs.python-guide.org/writing/structure/#regarding-django-applications
+
+.. _`the official Django Tutorial Part 1`: https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project
+
+This results in a ``example_project/`` in the root directory with a directory tree like this: ::
 
     example_project/  
         example_project/
@@ -45,23 +69,25 @@ This results in a ``example_project/`` in the root directory with a structure li
             wsgi.py  
         manage.py  
 
-Now, let us move into ``example_project/``. ::
+Now, let us navigate into ``example_project/``. ::
 
     (venv) cd example_project
 
-Add ``scrapy_django_dashboard`` into ``INSTALLED_APPS`` in Django project settings. For more details, check out `example_project/example_project/settings.py`_.  
+Add ``scrapy_django_dashboard`` into ``INSTALLED_APPS`` in ``settings.py``. For more detailed comments, check out `example_project/example_project/settings.py`_ on `GitHub`_.  
+
+.. _`example_project/example_project/settings.py`:  https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/example_project/settings.py
 
 
-.. _creating_django_app:
+.. _creating_open_news_app:
 
-Creating Django App
--------------------
+Creating Open News App
+^^^^^^^^^^^^^^^^^^^^^^
 
-Further, we create a demo app called ``open_news``. ::
+Next, we create ``open_news`` app by running this command in ``example_project/example_project/`` (where ``manage.py`` resides). ::
 
     (venv) python manage.py startapp open_news
 
-This results in a ``open_news/`` in ``example_project/`` with a structure like this: ::
+This results in a ``open_news/`` with a directory tree like this: ::
 
     open_news/  
         migrations/
@@ -74,14 +100,14 @@ This results in a ``open_news/`` in ``example_project/`` with a structure like t
         views.py
 
 
-.. _creating_django_app_models:
+.. _creating_open_news_app_models:
 
-Creating Django App Models
---------------------------
+Creating Open News App Models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In ``open_news`` app, we need to create at least *two model classes*. The first class stores the scraped data (``Articles`` in our example), and the second one (``NewsWebsite`` in our example) servers a reference model class defining the origin/category/topic where the scraped items belong to. 
+In ``open_news`` app, we need to create at least *two model classes*. The first class stores the scraped data (``Articles`` in our example), and the second one (``NewsWebsite`` in our example) acts as a reference model class defining the ``origin/category/topic`` where the scraped items belong to. 
 
-Here is `example_project/example_project/open_news/model.py`_ ::
+Here is our ``model.py``. ::
 
   # example_project/example_project/open_news/model.py
 
@@ -93,40 +119,51 @@ Here is `example_project/example_project/open_news/model.py`_ ::
   from scrapy_django_dashboard.models import Scraper, SchedulerRuntime
   from six import python_2_unicode_compatible
 
+
   @python_2_unicode_compatible
   class NewsWebsite(models.Model):
       name = models.CharField(max_length=200)
       url = models.URLField()
-      scraper = models.ForeignKey(Scraper, blank=True, null=True, on_delete=models.SET_NULL)
-      scraper_runtime = models.ForeignKey(SchedulerRuntime, blank=True, null=True, on_delete=models.SET_NULL)
-      
+      scraper = models.ForeignKey(
+          Scraper, blank=True, null=True, on_delete=models.SET_NULL)
+      scraper_runtime = models.ForeignKey(
+          SchedulerRuntime, blank=True, null=True, on_delete=models.SET_NULL)
+
       def __str__(self):
           return self.name
+
 
   @python_2_unicode_compatible
   class Article(models.Model):
       title = models.CharField(max_length=200)
-      news_website = models.ForeignKey(NewsWebsite, on_delete=models.SET_NULL)  
+      news_website = models.ForeignKey(
+          NewsWebsite, blank=True, null=True, on_delete=models.SET_NULL)
       description = models.TextField(blank=True)
       url = models.URLField(blank=True)
       thumbnail = models.CharField(max_length=200, blank=True)
-      checker_runtime = models.ForeignKey(SchedulerRuntime, blank=True, null=True, on_delete=models.SET_NULL)
-      
+      checker_runtime = models.ForeignKey(
+          SchedulerRuntime, blank=True, null=True, on_delete=models.SET_NULL)
+
       def __str__(self):
           return self.title
 
+
   class ArticleItem(DjangoItem):
       django_model = Article
+
 
   @receiver(pre_delete)
   def pre_delete_handler(sender, instance, using, **kwargs):
       if isinstance(instance, NewsWebsite):
           if instance.scraper_runtime:
               instance.scraper_runtime.delete()
-    
+
       if isinstance(instance, Article):
           if instance.checker_runtime:
               instance.checker_runtime.delete()
+
+
+  pre_delete.connect(pre_delete_handler)
 
 We have defined some foreign key fields referencing ``Scrapy Django Dashboard`` models. The ``NewsWebsite`` class refers to the :ref:`scraper` model, which contains the main scraper with information about how to scrape the attributes of the article objects. The ``scraper_runtime`` field is a reference to the :ref:`scheduler_runtime` class from ``Scrapy Django Dashboard`` models. This object stores the scraper schedules. 
 
@@ -136,13 +173,15 @@ The ``Article`` model class has a class attribute called ``checker_runtime``, a 
 
 Last but not least, ``Scrapy Django Dashboard`` uses the DjangoItem_ class from Scrapy to store the scraped data into the database.
 
+.. _DjangoItem: https://scrapy.readthedocs.org/en/latest/topics/djangoitem.html
+
 .. note::
 
    To have a loose coupling between the runtime objects and the domain model objects, we declare the foreign keys to the ``Scrapy Django Dashboard`` objects with ``blank=True, null=True, on_delete=models.SET_NULL``. This prevents the reference object and the associated scraped objects from being deleted when we remove a ``Scrapy Django Dashboard`` object by accident.
 
 .. note::
 
-  When we delete model objects via the Django admin dashboard, the runtime objects are not removed. To enable this feature,use Django's `pre_delete signals <https://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods>`_ in your ``models.py`` to delete e.g. the ``checker_runtime`` when deleting an article ::
+  When we delete model objects via the Django admin dashboard, the runtime objects are not removed. To enable this feature,use `Django's pre_delete signals`_ in your ``models.py`` to delete e.g. the ``checker_runtime`` when deleting an article ::
 
     @receiver(pre_delete)
     def pre_delete_handler(sender, instance, using, **kwargs):
@@ -154,14 +193,13 @@ Last but not least, ``Scrapy Django Dashboard`` uses the DjangoItem_ class from 
                 
     pre_delete.connect(pre_delete_handler)
 
-
-The next step is to configure Scrapy_ for ``open_news`` app.
+.. _`Django's pre_delete signals`: https://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods
 
 
 .. _configuring_scrapy:
 
 Configuring Scrapy
-------------------
+^^^^^^^^^^^^^^^^^^
 
 The common way to start a Scrapy project with boilerplate files is to run: ::
 
@@ -169,7 +207,7 @@ The common way to start a Scrapy project with boilerplate files is to run: ::
 
 However, this approach does not save much time down the road, because the boilerplate code can not directly interact with ``Scrapy Django Dashboard`` app without manual configuration.
 
-Therefore, **the preferred way** is to create ``scrapy.cfg`` file in ``example_project/`` manually (where ``open_news/`` resides). Further, create ``scrapy/`` in ``open_news/``, and add the following files according to this directory tree: ::
+Therefore, **the preferred way** is to create ``scrapy.cfg`` file in ``example_project/`` manually (where ``open_news/`` resides). Further, create ``scrapy/`` in ``open_news/``, and add the following files according to this following directory tree. ::
 
     example_project/  
         example_project/
@@ -198,9 +236,9 @@ Therefore, **the preferred way** is to create ``scrapy.cfg`` file in ``example_p
         
 .. note::
 
-  It is recommended to create a Scrapy project within the app of interest. To achieve this, create the necessary modules for the Scrapy project in a sub directory (named ``scraper``) of this app. 
+  It is recommended to create a Scrapy project within the app of interest. To achieve this, create the necessary modules for the Scrapy project in a sub directory (``scraper`` in our example) of this app. 
 
-Here is what `example_project/example_project/scrapy.cfg`_ looks like. Make changes for the app name and settings files accordingly. ::
+Here is what ``scrapy.cfg`` looks like: (Make proper changes, such as app name in your own project.) ::
  
   # example_project/example_project/scrapy.cfg
 
@@ -213,40 +251,40 @@ Here is what `example_project/example_project/scrapy.cfg`_ looks like. Make chan
   url = http://localhost:6800/
   project = open_news
 
-And this is the `example_project/example_project/open_news/scraper/settings.py`_. ::
+And here is ``settings.py`` in ``example_project/example_project/open_news/scraper/``. ::
 
   # example_project/example_project/open_news/scraper/settings.py
 
   from __future__ import unicode_literals
-  import os, sys
+  import os
+  import sys
 
   PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
   os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
-  sys.path.insert(0, os.path.join(PROJECT_ROOT, "../../..")) 
+  sys.path.insert(0, os.path.join(PROJECT_ROOT, "../../.."))
 
   MEDIA_ALLOW_REDIRECTS = True
 
   BOT_NAME = 'open_news'
 
-  LOG_LEVEL = 'INFO'
+  LOG_LEVEL = 'DEBUG'
 
   SPIDER_MODULES = [
-    'scrapy_django_dashboard.spiders',
-    'open_news.scraper',
-  ]  
+      'scrapy_django_dashboard.spiders',
+      'open_news.scraper',
+  ]
 
   USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
 
   ITEM_PIPELINES = {
-    'scrapy_django_dashboard.pipelines.DjangoImagesPipeline': 200,
-    'scrapy_django_dashboard.pipelines.ValidationPipeline': 400,
-    'open_news.scraper.pipelines.DjangoWriterPipeline': 800,
+      'scrapy_django_dashboard.pipelines.DjangoImagesPipeline': 200,
+      'scrapy_django_dashboard.pipelines.ValidationPipeline': 400,
+      'open_news.scraper.pipelines.DjangoWriterPipeline': 800,
   }
 
-  IMAGES_STORE = os.path.join(PROJECT_ROOT, '../thumbnails')
   IMAGES_THUMBS = {
-    'medium': (50, 50),
-    'small': (25, 25),
+      'medium': (50, 50),
+      'small': (25, 25),
   }
 
   DSCRAPER_IMAGES_STORE_FORMAT = 'ALL'
@@ -254,21 +292,18 @@ And this is the `example_project/example_project/open_news/scraper/settings.py`_
   DSCRAPER_LOG_LEVEL = 'ERROR'
   DSCRAPER_LOG_LIMIT = 5
 
-.. note::
-
-  Refer to GitHub for more comments on ``open_news/scraper/settings.py``.
-
 The ``SPIDER_MODULES`` is a list of the spider modules of ``Scrapy Django Dashboard`` app and ``scraper`` package where Scrapy will look for spiders. In ``ITEM_PIPELINES``, ``scrapy_django_dashboard.pipelines.DjangoImagesPipeline``, a sub-class of ``scrapy.pipelines.images.ImagesPipeline``, enables scraping image media files; ``scrapy_django_dashboard.pipelines.ValidationPipeline`` checks the mandatory attributes and prevents duplicate entries by examining the unique key (the url attribute in our example). 
 
 .. note::
 
-  To make Scrapy interact with Django objects, we need two static classes: one being a spider class, a sub-class of :ref:`django_spider`,  and the other being a Scrapy pipeline to save scraped items.
+  Refer to `GitHub`_ for more detailed comments in ``open_news/scraper/settings.py``.
 
+To make Scrapy interact with Django objects, we need two more static classes: one being a spider class, a sub-class of :ref:`django_spider`,  and the other being a Scrapy pipeline to save scraped items.
 
 .. _creating_scrapy_spider:
 
 Creating Scrapy Spider
-----------------------
+""""""""""""""""""""""
 
 Our ``ArticleSpider``, a sub-class of :ref:`django_spider`, references itself to the domain model class ``NewsWebsite``. ::
 
@@ -278,8 +313,9 @@ Our ``ArticleSpider``, a sub-class of :ref:`django_spider`, references itself to
   from scrapy_django_dashboard.spiders.django_spider import DjangoSpider
   from open_news.models import NewsWebsite, Article, ArticleItem
 
+
   class ArticleSpider(DjangoSpider):
-      
+
       name = 'article_spider'
 
       def __init__(self, *args, **kwargs):
@@ -295,9 +331,9 @@ Our ``ArticleSpider``, a sub-class of :ref:`django_spider`, references itself to
 .. _creating_scrapy_pipeline:
 
 Creating Scrapy Pipeline
-------------------------
+""""""""""""""""""""""""
 
-``Scrapy Django Dashboard`` allows additional attributes added to the scraped items by requiring custom item pipelines. ::
+``Scrapy Django Dashboard`` allows additional attributes to be added to the scraped items by requiring custom item pipelines. ::
 
   # example_project/open_news/scraper/pipelines.py
 
@@ -309,48 +345,53 @@ Creating Scrapy Pipeline
   from scrapy.exceptions import DropItem
   from scrapy_django_dashboard.models import SchedulerRuntime
 
+
   class DjangoWriterPipeline(object):
-      
+
       def process_item(self, item, spider):
           if spider.conf['DO_ACTION']:
               try:
                   item['news_website'] = spider.ref_object
-                  
+
                   checker_rt = SchedulerRuntime(runtime_type='C')
                   checker_rt.save()
                   item['checker_runtime'] = checker_rt
-                  
+
                   item.save()
                   spider.action_successful = True
-                  spider.struct_log("{cs}Item {id} saved to Django DB.{ce}".format(
-                      id=item._dds_id_str,
+                  spider.logger.info("{cs}Item {id} saved to Django DB.{ce}".format(
+                      id=item._id_str,
                       cs=spider.bcolors['OK'],
                       ce=spider.bcolors['ENDC']))
-                      
+
               except IntegrityError as e:
-                  spider.log(str(e), logging.ERROR)
+                  spider.logger.error(str(e))
                   raise DropItem("Missing attribute.")
-                  
+
           return item
 
-???
+
+**TODO**
+
 The things you always have to do here is adding the reference object to the scraped item class and - if you
 are using checker functionality - create the runtime object for the checker. You also have to set the
 ``action_successful`` attribute of the spider, which is used internally when the spider is closed.
-???
 
 
 .. _database_migration_authorization:
 
 Database Migration & Authorization
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now, we head back to ``example_project/`` (where ``manage.py`` resides). When dealing a custom app (``open_news`` in our example), we need make database migrations: ::
+Now, we head back to ``example_project/`` (where ``manage.py`` resides). When dealing a custom app (``open_news`` in our example), we need to make database migrations: ::
 
   (venv) python manage.py makemigrations open_news
+
+This creates a SQLite database file in ``example_project/example_project/``, called ``example_project.db``. Feel free to change db location by changing ``example_project/example_project/settings.py`` as needed. Now, we can migrate the database. ::
+
   (venv) python migrate
 
-This creates a SQLite database file in ``example_project/open_news/``, called ``open_news.db``. Feel free to change db location by changing ``example_project/example_project/settings.py`` as needed.
+This creates a SQLite database file in ``example_project.db`` in ``example_project/example_project/``. Feel free to change db location by tweaking ``example_project/example_project/settings.py`` as needed.
 
 We also need an account to log into Django admin dashboard. ::
 
@@ -362,8 +403,13 @@ Fill out username, email and password. Next, power up the development server and
 
 The default admin page should be ``http://localhost:8000/admin``.
 
-.. note::
-  The following shows how to configure in Django admin dashboard.
+
+.. _part_two:
+
+PART TWO
+--------
+
+In Part Two, our configurations take place primarily in Django admin dashboard, prior to starting the spider from the prompt.
 
 
 .. _defining_item_object_class:
@@ -635,17 +681,7 @@ to the DB. If you try again later when some news articles changed on the Wikinew
 articles should be added to the DB. 
 
 
-.. _GitHub: https://github.com/0xboz/scrapy_django_dashboard
-.. _Scrapy: http://www.scrapy.org/
-.. _Wikinews: http://en.wikinews.org/wiki/Main_Page
 
-.. _`Django ORM <on_delete> by reading the documentation`: https://docs.djangoproject.com/en/3.0/ref/models/fields/#django.db.models.ForeignKey.on_delete
-.. _`a simple script`: https://github.com/0xboz/install_pyenv_on_debian
-.. _`example_project/example_project/settings.py`:  https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/example_project/settings.py
 
-.. _`example_project/example_project/scrapy.cfg`: https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/scrapy.cfg
-.. _`example_project/example_project/open_news/scraper/settings.py`: https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/open_news/scraper/settings.py
 
-.. _`example_project/example_project/open_news/model.py`: https://github.com/0xboz/scrapy_django_dashboard/blob/master/example_project/open_news/models.py
 
-.. _DjangoItem: https://scrapy.readthedocs.org/en/latest/topics/djangoitem.html
