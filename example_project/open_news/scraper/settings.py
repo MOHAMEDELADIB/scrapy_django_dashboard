@@ -9,12 +9,13 @@ http://doc.scrapy.org/topics/settings.html
 
 # Allows Python 2 to have the default interpretation of string literals be Unicode (UTF8)
 from __future__ import unicode_literals
-import os, sys
+import os
+import sys
 
 # `example_project` specifics
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example_project.settings")
-sys.path.insert(0, os.path.join(PROJECT_ROOT, "../../..")) 
+sys.path.insert(0, os.path.join(PROJECT_ROOT, "../../.."))
 
 # Download thumbnail issue
 # [scrapy.pipelines.files] WARNING: File (code: 301): Error downloading file from <GET http://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/USA_orthographic.svg/100px-USA_orthographic.svg.png> referred in <None>
@@ -23,10 +24,10 @@ MEDIA_ALLOW_REDIRECTS = True
 
 BOT_NAME = 'open_news'
 
-#Setting LOG_STDOUT to True will prevent Celery scheduling to work, 2017-06-06
+# Setting LOG_STDOUT to True will prevent Celery scheduling to work, 2017-06-06
 # Scrapy LOG_STDOUT defaults to False
 # https://docs.scrapy.org/en/latest/topics/settings.html#log-stdout
-# LOG_STDOUT = False 
+# LOG_STDOUT = False
 
 LOG_LEVEL = 'DEBUG'
 
@@ -39,8 +40,8 @@ SPIDER_MODULES = [
 # Use a very common UA
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
 
-# A dict containing the item pipelines to use, and their orders. 
-# Order values are arbitrary, but it is customary to define them in the 0-1000 range. 
+# A dict containing the item pipelines to use, and their orders.
+# Order values are arbitrary, but it is customary to define them in the 0-1000 range.
 # Lower orders process before higher orders.
 ITEM_PIPELINES = {
     'scrapy_django_dashboard.pipelines.DjangoImagesPipeline': 200,
