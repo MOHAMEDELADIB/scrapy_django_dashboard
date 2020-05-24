@@ -2,4 +2,4 @@
 
 # Load example_project and open_news data to the database.
 
-python manage.py loaddata example_project_open_news.json
+python manage.py loaddata example_project.json
