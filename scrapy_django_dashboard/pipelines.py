@@ -151,7 +151,7 @@ class ValidationPipeline(object):
                     spider.action_successful = True
                     msg = "{cs}Item {id} already in DB, attributes updated: {attr_str}{ce}".format(
                         id=item._id_str, attr_str=updated_attribute_list, cs=spider.bcolors["OK"], ce=spider.bcolors["ENDC"])
-                    spider.struct_log(msg)
+                    spider.logger.warning(msg)
                     raise DropItem()
                 else:
                     msg = "{cs}Double item {id}, not saved.{ce}".format(

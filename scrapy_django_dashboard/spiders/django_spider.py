@@ -357,9 +357,9 @@ class DjangoSpider(DjangoBaseSpider):
     def _log_page_info(self, page_num, follow_page_num, url, rpt, form_data, kwargs):
         self.logger.info('')
         self.logger.info(self.bcolors['BOLD'] + '======================================================================================' + self.bcolors['ENDC'])
-        self.struct_log("{es}{es2}Scraping data from page {p}({fp}).{ec}{ec}".format(
+        self.logger.info("{es}{es2}Scraping data from page {p}({fp}).{ec}{ec}".format(
             p=page_num, fp=follow_page_num, es=self.bcolors['BOLD'], es2=self.bcolors['HEADER'], ec=self.bcolors['ENDC']))
-        self.struct_log("URL     : {url}".format(url=url))
+        self.logger.info("URL     : {url}".format(url=url))
         self._log_request_info(rpt, form_data, kwargs)
         self.logger.info(self.bcolors['BOLD'] + '======================================================================================' + self.bcolors['ENDC'])
     
@@ -675,7 +675,7 @@ class DjangoSpider(DjangoBaseSpider):
             page_str = str(page_num) + '(' + str(follow_page_num) + ')'
             self.logger.info("")
             self.logger.info(self.bcolors['BOLD'] + '--------------------------------------------------------------------------------------' + self.bcolors['ENDC'])
-            self.struct_log("{cs}Starting to crawl item {i} from page {p}.{ce}".format(
+            self.logger.info("{cs}Starting to crawl item {i} from page {p}.{ce}".format(
                 i=str(item_num), p=page_str, cs=self.bcolors["HEADER"], ce=self.bcolors["ENDC"]))
             self.logger.info(self.bcolors['BOLD'] + '--------------------------------------------------------------------------------------' + self.bcolors['ENDC'])
             item = self.parse_item(response, obj, rpt.page_type, item_num)

@@ -18,14 +18,14 @@ class DjangoWriterPipeline(object):
                 item['checker_runtime'] = checker_rt
                 
                 item.save()
-                spider.action_successful = True
-                spider.struct_log("{cs}Item {id} saved to Django DB.{ce}".format(
-                    id=item._dds_id_str,
+                spider.action_successful = True                
+                spider.logger.info("{cs}Item {id} saved to Django DB.{ce}".format(
+                    id=item._id_str,
                     cs=spider.bcolors['OK'],
                     ce=spider.bcolors['ENDC']))
                     
             except IntegrityError as e:
-                spider.log(str(e), logging.ERROR)
+                spider.logger.error(str(e))
                 raise DropItem("Missing attribute.")
                 
         return item

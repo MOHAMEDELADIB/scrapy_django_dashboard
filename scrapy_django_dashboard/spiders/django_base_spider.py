@@ -268,12 +268,12 @@ class DjangoBaseSpider(CrawlSpider):
                 }
     
     
-    def struct_log(self, msg):
-        level = self.conf['CONSOLE_LOG_LEVEL']
-        if level == 'INFO' or level == 'DEBUG':
-            self.log(msg, logging.INFO)
-        else:
-            self.log(msg, logging.WARNING)
+    # def struct_log(self, msg):
+    #     level = self.conf['CONSOLE_LOG_LEVEL']
+    #     if level == 'INFO' or level == 'DEBUG':
+    #         self.log(msg, logging.INFO)
+    #     else:
+    #         self.log(msg, logging.WARNING)
     
 
     def spider_closed(self):
