@@ -370,12 +370,9 @@ Creating Scrapy Pipeline
 
           return item
 
+.. note::
 
-**TODO**
-
-The things you always have to do here is adding the reference object to the scraped item class and - if you
-are using checker functionality - create the runtime object for the checker. You also have to set the
-``action_successful`` attribute of the spider, which is used internally when the spider is closed.
+  We have added the reference object to the scraped item class. If you are planning to enable checker, create the runtime object for the checker. Make sure to set the ``action_successful`` attribute of the spider, which is used internally when the spider is closed.
 
 
 .. _database_migration_authorization:
@@ -409,45 +406,45 @@ The default admin page should be ``http://localhost:8000/admin``.
 PART TWO
 --------
 
-In Part Two, our configurations take place primarily in Django admin dashboard, prior to starting the spider from the prompt.
+In Part Two, our configurations take place primarily within Django admin dashboard.
+
+.. note::
+
+  You can use ``load_data.sh`` script or the command below to load all objects of our example project to the database. ::
+
+    python manage.py loaddata example_project.json 
+
+.. _defining_scrapers:
+
+Defining Scrapers
+^^^^^^^^^^^^^^^^^
+
+Log into Django admin dashboard, it should look similar to this:
+
+.. image:: images/django_admin_dashboard_overview.png
+
+.. note::
+
+  **Overview of Scraper Workflow**
+
+  * The scraper collects the summary of a base element from a ``Main Page (MP)``.
+  * If instructed, the scraper continues gathering more information from a ``Detail Page (DP)`` of each base element. 
+  * Finally, all items and their attributes scrapped either from a MP or DP, are saved into a database. 
 
 
-.. _defining_item_object_class:
+Select ``Scrapy Django Dashboard`` > ``Scrapers`` > ``+ Add Scraper``, and here is the screenshot. 
 
-Defining Item Object Class
---------------------------
+.. image:: images/add_scraper_0.png
 
-Now, log into Django admin dashboard, it should look similar to this:
+Give the scraper a name ``Wikinews Scraper`` for our ``open news`` app. 
 
-.. image:: images/screenshot_django_admin_overview.png
 
-Before being able to create scrapers in Django Dynamic Scraper you have to define which parts of the Django
-model class you defined above should be filled by your scraper. This is done via creating a new 
-:ref:`scraped_obj_class` in your Django admin interface and then adding several :ref:`scraped_obj_attr` 
-datasets to it, which is done inline in the form for the :ref:`scraped_obj_class`. All attributes for the
-object class which are marked as to be saved to the database have to be named like the attributes in your 
-model class to be scraped. In our open news example
-we want the title, the description, and the url of an Article to be scraped, so we add these attributes with
-the corresponding names to the scraped obj class.
+.. _defining_scraped_obj_class:
 
-The reason why we are redefining these attributes here, is that we can later define x_path elements for each
-of theses attributes dynamically in the scrapers we want to create. When Django Dynamic Scraper
-is scraping items, the **general workflow of the scraping process** is as follows:
+Defining Scraped Object class
+"""""""""""""""""""""""""""""
 
-* The DDS scraper is scraping base elements from the overview page of items beeing scraped, with each base
-  element encapsulating an item summary, e.g. in our open news example an article summary containing the
-  title of the article, a screenshot and a short description. The encapsuling html tag often is a ``div``,
-  but could also be a ``td`` tag or something else.
-* If provided the DDS scraper is then scraping the url from this item summary block leading to a detail page of the
-  item providing more information to scrape
-* All the real item attributes (like a title, a description, a date or an image) are then scraped either from 
-  within the item summary block on the overview page or from a detail page of the item. This can be defined later
-  when creating the scraper itself.
-
-To define which of the scraped obj attributes are just simple standard attributes to be scraped, which one
-is the base attribute (this is a bit of an artificial construct) and which one eventually is a url to be followed
-later, we have to choose an attribute type for each attribute defined. There is a choice between the following
-types (taken from ``dynamic_scraper.models.ScrapedObjAttr``)::
+Next, we need to define :ref:`scraped_obj_class`. A ``Scraped obj class`` is basically the item which the app scrapes from the source. All attributes associated with this item need to be defined as well. In our example, an Article is the item, and its attributes includes the title, the description, the url and the thumbnail image. Click ``+`` icon and another window pops up. For ``open news`` app, the item name is ``Article``. For its attributes, select one of the following types defined in ``scrapy_django_dashboard.models.ScrapedObjAttr``: ::
 
   ATTR_TYPE_CHOICES = (
       ('S', 'STANDARD'),
@@ -457,173 +454,117 @@ types (taken from ``dynamic_scraper.models.ScrapedObjAttr``)::
       ('I', 'IMAGE'),
   )
 
-``STANDARD``, ``BASE`` and ``DETAIL_PAGE_URL`` should be clear by now, ``STANDARD (UPDATE)`` behaves like ``STANDARD``, 
-but these attributes are updated with the new values if the item is already in the DB. ``IMAGE`` represents attributes which will 
-hold images or screenshots. So for our open news example we define a base attribute called 'base' with 
-type ``BASE``, two standard elements 'title' and 'description' with type ``STANDARD`` 
-and a url field called 'url' with type ``DETAIL_PAGE_URL``. Your definition form for your scraped obj class 
-should look similar to the screenshot below:
+``BASE`` type is for the base attribute (an arbitrary definition), which is a parent node per se. ``STANDARD``, ``IMAGE`` and ``DETAIL_PAGE_URL`` should be self-explanatory. ``STANDARD (UPDATE)`` allows new updates if there is an existing record. To prevent duplicate entries, we need to use one or more attributes as ``ID Fields``. ``DETAIL_PAGE_URL`` is normally the ideal candidate for this purpose if available. Additionally, :ref:`item_checkers` utilizes ``DETAIL_PAGE_URL`` type attributes to check and remove non-existing records. Here is the screenshot for our example app.
 
-.. image:: images/screenshot_django-admin_add_scraped_obj_class.png
+.. image:: images/scraped_obj_class.png
 
-To prevent double entries in the DB you also have to set one or more object attributes of type ``STANDARD`` or 
-``DETAIL_PAGE_URL`` as ``ID Fields``. If you provide a ``DETAIL_PAGE_URL`` for your object scraping, it is often a
-good idea to use this also as an ``ID Field``, since the different URLs for different objects should be unique by
-definition in most cases. Using a single ``DETAIL_PAGE_URL`` ID field is also prerequisite if you want to use the
-checker functionality (see: :ref:`item_checkers`) of DDS for dynamically detecting and deleting items not existing
-any more.
+Save the settings. For now, set ``status`` to ``MANUAL``, since we will run the spider from the terminal at the end of this tutorial. Here is what we have achieved so far.  
 
-Also note that these ``ID Fields`` just provide unique identification of an object for within the scraping process. In your
-model class defined in the chapter above you can use other ID fields or simply use a classic numerical auto-incremented
-ID provided by your database.
+.. image:: images/add_scraper_1.png
 
 .. note::
-   If you define an attribute as ``STANDARD (UPDATE)`` attribute and your scraper reads the value for this attribute from the detail page
-   of the item, your scraping process requires **much more page requests**, because the scraper has to look at all the detail pages
-   even for items already in the DB to compare the values. If you don't use the update functionality, use the simple ``STANDARD``
-   attribute instead!
+
+   In case of using ``STANDARD (UPDATE)`` type, the process takes **much more page requests**, since the scraper reads a detail page of each item and compares the information against the database. If you are not planning to update the records, select ``STANDARD`` type instead.
 
 .. note::
-   The ``order`` attribute for the different object attributes is just for convenience and determines the
-   order of the attributes when used for defining ``XPaths`` in your scrapers. Use 10-based or 100-based steps
-   for easier resorting (e.g. '100', '200', '300', ...).
+
+   The ``order`` of each attribute determines the order listed in ``Scraper elems`` section. Use 10-based or 100-based scale for a easier resorting.
 
 
-Defining your scrapers
-======================
+.. _locating_elements:
 
-General structure of a scraper
-------------------------------
+Locating elements
+"""""""""""""""""
 
-Scrapers for Django Dynamic Scraper are also defined in the Django admin interface. You first have to give the
-scraper a name and select the associated :ref:`scraped_obj_class`. In our open news example we call the scraper
-'Wikinews Scraper' and select the :ref:`scraped_obj_class` named 'Article' defined above.
+Now, let us move down to ``Scraper elems`` section. Each element corresponds to the attribute we defined in ``Scraped obj class``. By following the customs of Scrapy, we can use ``x_path`` or ``reg_exp`` to locate the information from the source. The ``request_page_type`` decides if the scraper should extract the data a ``Main Page`` or a ``Detail Page``. 
 
-The main part of defining a scraper in DDS is to create several scraper elements, each connected to a 
-:ref:`scraped_obj_attr` from the selected :ref:`scraped_obj_class`. Each scraper element define how to extract 
-the data for the specific :ref:`scraped_obj_attr` by following the main concepts of Scrapy_ for scraping
-data from websites. In the fields named 'x_path' and 'reg_exp' an XPath and (optionally) a regular expression
-is defined to extract the data from the page, following Scrapy's concept of 
-`XPathSelectors <http://readthedocs.org/docs/scrapy/en/latest/topics/selectors.html>`_. The 'request_page_type'
-select box tells the scraper if the data for the object attibute for the scraper element should be extracted
-from the overview page or a detail page of the specific item. For every chosen page type here you have to define a
-corresponding request page type in the admin form above. The fields 'processors' and 'processors_ctxt' are
-used to define output processors for your scraped data like they are defined in Scrapy's
-`Item Loader section <http://readthedocs.org/docs/scrapy/en/latest/topics/loaders.html>`_.
-You can use these processors e.g. to add a string to your scraped data or to bring a scraped date in a
-common format. More on this later. Finally, the 'mandatory' check box is indicating whether the data
-scraped by the scraper element is a necessary field. If you define a scraper element as necessary and no
-data could be scraped for this element the item will be dropped. You always have to keep attributes
-mandatory if the corresponding attributes of your domain model class are mandatory fields, otherwise the 
-scraped item can't be saved in the DB.
+.. note::
 
-For the moment, keep the ``status`` to ``MANUAL`` to run the spider via the command line during this tutorial.
-Later you will change it to ``ACTIVE``. 
+  **WARNING**: For every ``request_page_type``, make sure to define a corresponding entry in ``Request page types`` section below. 
 
-Creating the scraper of our open news example
----------------------------------------------
+``processors`` and ``processors_ctxt`` define the output processors like those in Scrapy's
+`Item Loader section`_. For instance, use the processor to add a string to the data or reformat the date. ``mandatory`` dictates whether the data is a required field. The whole item is dropped if the field is not available when ``mandatory`` box is checked. Be sure to "sync" ``mandatory`` checkbox with the corresponding attributes defined in the domain model class, otherwise the item will not be saved in the database.
 
-Let's use the information above in the context of our Wikinews_ example. Below you see a screenshot of an
-html code extract from the Wikinews_ overview page like it is displayed by the developer tools in Google's 
-Chrome browser:
+.. _`Item Loader section`: http://readthedocs.org/docs/scrapy/en/latest/topics/loaders.html
+
+In our example project, Wikinews_ is the source. Here is a screenshot of the html of Wikinews_ main page by using developer tools in Chrome:
  
-.. image:: images/screenshot_wikinews_overview_page_source.png
+.. image:: images/wikinews_main.png
 
-The next screenshot is from a news article detail page:
+Here is the header tag from the news article detail page:
 
-.. image:: images/screenshot_wikinews_detail_page_source.png
-
-We will use these code snippets in our examples.
+.. image:: images/wikinews_detail.png
 
 .. note::
-  If you don't want to manually create the necessary DB objects for the example project, you can also run
-  ``python manage.py loaddata open_news/open_news_dds_[DDS_VERSION].json`` from within the ``example_project`` 
-  directory in your favorite shell to have all the objects necessary for the example created automatically.
-  Use the file closest to the current DDS version. If you run into problems start installing the fitting
-  DDS version for the fixture, then update the DDS version and apply the latest Django migrations.
-  
-.. note::
-   The WikiNews site changes its code from time to time. I will try to update the example code and text in the
-   docs, but I won't keep pace with the screenshots so they can differ slightly compared to the real world example.
 
-1. First we have to define a base 
-scraper element to get the enclosing DOM elements for news item
-summaries. On the Wikinews_ overview page all news summaries are enclosed by ``<td>`` tags with a class
-called 'l_box', so ``//td[@class="l_box"]`` should do the trick. We leave the rest of the field for the 
-scraper element on default.
+   The WikiNews site structure changes over time. Make proper changes when necessary.
 
-2. It is not necessary but just for the purpose of this example let's scrape the title of a news article
-from the article detail page. On an article detail page the headline of the article is enclosed by a
-``<h1>`` tag with an id named 'firstHeading'. So ``//h1[@id="firstHeading"]/text()`` should give us the headline.
-Since we want to scrape from the detail page, we have to activate the 'from_detail_page' check box.
+Based on those html structures, we formulate the XPATH for each element.
 
-3. All the standard elements we want to scrape from the overview page are defined relative to the
-base element. Therefore keep in mind to leave the trailing double slashes of XPath definitions.
-We scrape the short description of a news item from within a ``<span>`` tag with a class named 'l_summary'.
-So the XPath is ``p/span[@class="l_summary"]/text()``.
+* 1. Define a base element to capture DOM elements for news article summaries. On the main page, all news summaries are enclosed by ``<td>`` tags with a class name ``l_box``, and hence ``//td[@class="l_box"]`` should be sufficient.
 
-4. And finally the url can be scraped via the XPath ``span[@class="l_title"]/a/@href``. Since we only scrape 
-the path of our url with this XPath and not the domain, we have to use a processor for the first time to complete
-the url. For this purpose there is a predefined processor called 'pre_url'. You can find more predefined
-processors in the ``dynamic_scraper.utils.processors`` module - see :ref:`processors` for processor reference - 'pre_url' is simply doing what we want,
-namely adding a base url string to the scraped string. To use a processor, just write the function name
-in the processor field. Processors can be given some extra information via the processors_ctxt field.
-In our case we need the spefic base url our scraped string should be appended to. Processor context
-information is provided in a dictionary like form: ``'processor_name': 'context'``, in our case:
-``'pre_url': 'http://en.wikinews.org'``. Together with our scraped string this will create
-the complete url.
-
-.. image:: images/screenshot_django-admin_scraper_1.png
-.. image:: images/screenshot_django-admin_scraper_2.png
-
-This completes the xpath definitions for our scraper. The form you have filled out should look similar to the screenshot above 
-(which is broken down to two rows due to space issues).
+* 2. For demonstrating purpose, the code scrapes the news title from the article detail page. As seen in the screenshot above, the article title is enclosed by ``<h1>`` tags with an id ``firstHeading``. ``string(//h1[@id="firstHeading"])`` should give us the headline. Since we want the scraper to get the title text from the detail page instead of the main page, let us select 'Detail Page 1' from the dropdown menu.
 
 .. note::
-   You can also **scrape** attributes of your object **from outside the base element** by using the ``..`` notation
-   in your XPath expressions to get to the parent nodes!
+
+  You might have considered using ``//h1[@id="firstHeading"]/text()``. The reason why we use ``string()`` is due to the fact that the news titles and short descriptions may contain additional html tags such as ``<i></i>``. In such case, ``text()`` only gets the text up to the first inner element.
+
+  See `StackOverflow`_ discussion.
+
+.. _`StackOverflow`: https://stackoverflow.com/a/10424209/11461544
+
+* 3. All other elements are located relative to the base element. Therefore, be sure to leave out the double slashes. The short description resides within ``<span>`` tag with a class name ``l_summary``. The XPath is ``string(p/span[@class="l_summary"])``.
+
+* 4. The XPath of url element is ``span[@class="l_title"]/a/@href``. Since the html only contains the relative path (without the domain), we use a predefined processor called ``pre_url`` to complete the url. Find more about predefined processors in the ``scrapy_django_dashboard.utils.processors`` module - see :ref:`processors`. Processors allows extra information through the ``processors_ctxt`` field, and the data is passed in a dictionary-like format ``'processor_name': 'context'``. For our example, ``'pre_url': 'http://en.wikinews.org'``. 
+
+Finally, this is our ``Scraper elems`` section.
+
+.. image:: images/scraper_elems.png
 
 .. note::
-   Starting with ``DDS v.0.8.11`` you can build your **detail page URLs** with
-   placeholders for **main page attributes** in the form of ``{ATTRIBUTE_NAME}``, see :ref:`attribute_placeholders` for further reference.
+
+   You can also **scrape** attributes of the object **from outside the base element** by using ``..`` notation in XPath expressions to get to the parent nodes!
+
+.. note::
+
+   :ref:`attribute_placeholders` allows you to customize **detail page URLs** with placeholders for **main page attributes** by using ``{ATTRIBUTE_NAME}``.
 
 
 .. _adding_request_page_types:
 
-Adding corresponding request page types
----------------------------------------
+Adding Request Page Types
+"""""""""""""""""""""""""
 
-For all page types you used for your ``ScraperElemes`` you have to define corresponding ``RequestPageType`` objects
-in the ``Scraper`` admin form. There has to be exactly one main page and 0-25 detail page type objects.
+For all request page types used in ``Scraper elems`` section above, we need to define the corresponding ``RequestPageType``. We can only have **one** ``Main Page`` type object and up to 25 ``Detail Page`` type objects. In our example, we have one ``Main Page`` type object and one ``Detail Page`` type object.
 
-.. image:: images/screenshot_django-admin_request_page_type_example.png
+.. image:: images/request_page_types.png
 
-Within the ``RequestPageType`` object you can define request settings like the content type (``HTML``, ``XML``,...),
-the request method (``GET`` or ``POST``) and others for the specific page type. With this it is e.g. possible to 
-scrape HTML content from all the main pages and ``JSON`` content from the followed detail pages. For more information
-on this have a look at the :ref:`advanced_request_options` section.
+Each ``RequestPageType`` object allows custom content type (``HTML``, ``XML`` or ``JSON``), request method (``GET`` or ``POST``) and more for each individual page type. With this feature, for an example, it is possible to scrape HTML content from the main page and ``JSON`` content from the detail pages. For more information on this topic, see :ref:`advanced_request_options` section.
 
-Create the domain entity reference object (NewsWebsite) for our open news example
----------------------------------------------------------------------------------
+For this tutorial, we just need to simply set ``Page type`` to ``Detail Page 1`` for ``title`` attribute, and ``Main Page`` for the rest of the attributes. Here are the screenshots for further clarification.
 
-Now - finally - we are just one step away of having all objects created in our Django admin.
-The last dataset we have to add is the reference object of our domain, meaning a ``NewsWebsite``
-object for the Wikinews Website.
+.. image:: images/request_page_types_main.png
 
-To do this open the NewsWebsite form in the Django admin, give the object a meaningful name ('Wikinews'),
-assign the scraper and create an empty :ref:`scheduler_runtime` object with ``SCRAPER`` as your
-``runtime_type``. 
+.. image:: images/request_page_types_detail.png
 
-.. image:: images/screenshot_django-admin_add_domain_ref_object.png
+
+.. _creating_domain_entity:
+
+Creating Domain Entity
+^^^^^^^^^^^^^^^^^^^^^^
+
+The last step is to add the reference object of our domain (a ``NewsWebsite`` object for the Wikinews site in our case). Open ``NewsWebsite`` form in Django admin dashboard > ``+ Add news website``, give the object a name 'Wikinews', assign the scraper and create an empty :ref:`scheduler_runtime` object with ``SCRAPER`` as the ``runtime_type``. 
+
+.. image:: images/add_domain_ref_object.png
+
 
 .. _running_scrapers:
 
-Running/Testing your scraper
-============================
+Running/Testing Scrapers
+------------------------
 
-You can run/test spiders created with Django Dynamic Scraper from the command line similar to how you would run your
-normal Scrapy spiders, but with some additional arguments given. The syntax of the DDS spider run command is
-as following::
+Running/testing scrapers from the command line is similar to starting Scrapy spiders, with some extra arguments. The command syntax is
+as follows: ::
 
   scrapy crawl [--output=FILE --output-format=FORMAT] SPIDERNAME -a id=REF_OBJECT_ID 
                           [-a do_action=(yes|no) -a run_type=(TASK|SHELL) 
@@ -632,56 +573,30 @@ as following::
                           -a start_page=PAGE -a end_page=PAGE
                           -a output_num_mp_response_bodies={Int} -a output_num_dp_response_bodies={Int} ]
   
-* With ``-a id=REF_OBJECT_ID`` you provide the ID of the reference object items should be scraped for,
-  in our example case that would be the Wikinews ``NewsWebsite`` object, probably with ID 1 if you haven't
-  added other objects before. This argument is mandatory.
+* ``-a id=REF_OBJECT_ID`` specifies the reference object ID. In our case, it should be the Wikinews ``NewsWebsite`` object (ID = 1) if you have not added other objects before. This argument is mandatory.
   
-* By default, items scraped from the command line are not saved in the DB. If you want this to happen,
-  you have to provide ``-a do_action=yes``.
+* By default, the scraped items are not saved in the database. Append ``-a do_action=yes`` otherwise.
   
-* With ``-a run_type=(TASK|SHELL)`` you can simulate task based scraper runs invoked from the 
-  command line. This can be useful for testing, just leave this argument for now.
+* ``-a run_type=(TASK|SHELL)`` simulates task-based scraper operations invoked from the command line. It is useful for testing. We can leave out this argument for now.
 
-* With ``-a max_items_read={Int}`` and ``-a max_items_save={Int}`` you can override the scraper settings for these
-  params.
+* ``-a max_items_read={Int}`` and ``-a max_items_save={Int}`` override the scraper params, accordingly.
 
-* With ``-a max_pages_read={Int}`` you can limit the number of pages read when using pagination
+* ``-a max_pages_read={Int}`` limits the number of pages to read when using pagination.
 
-* With ``-a start_page=PAGE`` and/or ``-a end_page=PAGE`` it is possible to set a start and/or end page
+* ``-a start_page=PAGE`` and/or ``-a end_page=PAGE`` sets the starting page and/or the last page.
 
-* With ``-a output_num_mp_response_bodies={Int}`` and ``-a output_num_dp_response_bodies={Int}`` you can log
-  the complete response body content of the {Int} first main/detail page responses to the screen for debugging
-  (beginnings/endings are marked with a unique string in the form ``RP_MP_{num}_START`` for using full-text
-  search for orientation)
+* ``-a output_num_mp_response_bodies={Int}`` and ``-a output_num_dp_response_bodies={Int}`` log the complete response body content of the {Int} first main/detail page responses to the terminal for debugging. The beginnings/endings are marked with a unique string in the form of ``RP_MP_{num}_START`` for using full-text search for orientation.
 
-* If you don't want your output saved to the Django DB but to a custom file you can use Scrapy's build-in 
-  output options ``--output=FILE`` and ``--output-format=FORMAT`` to scrape items into a file. Use this without 
-  setting the ``-a do_action=yes`` parameter! 
+* Scrapy's build-in output options ``--output=FILE`` and ``--output-format=FORMAT`` allows items to be saved as a file. **DO NOT** use this feature with ``-a do_action=yes``
 
-So, to invoke our Wikinews scraper, we have the following command::
+Now, we start Wikinews scraper by running this command: ::
 
-  scrapy crawl article_spider -a id=1 -a do_action=yes
-  
+  scrapy crawl article_spider -a id=1 -a do_action=yes  
 
-If you have done everything correctly (which would be a bit unlikely for the first run after so many single steps,
-but just in theory... :-)), you should get some output similar to the following, of course with other 
-headlines: 
+Here are some news articles logged in the terminal output. 
 
-.. image:: images/screenshot_scrapy_run_command_line.png
+.. image:: images/running_scrapers.png
 
-In your Django admin interface you should now see the scraped articles listed on the article overview page:
+In Django admin dashboard > ``Articles``, we should see the latest articles for Wikinews. 
 
-.. image:: images/screenshot_django-admin_articles_after_scraping.png
-
-Phew.
-
-Your first scraper with Django Dynamic Scraper is working. Not so bad! If you do a second run and there
-haven't been any new bugs added to the DDS source code in the meantime, no extra article objects should be added
-to the DB. If you try again later when some news articles changed on the Wikinews overview page, the new
-articles should be added to the DB. 
-
-
-
-
-
-
+.. image:: images/scraped_articles.png
