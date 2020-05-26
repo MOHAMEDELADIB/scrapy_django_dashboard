@@ -32,10 +32,10 @@ The code scrapes the news URLs, thumbnails and excerpts from the main page of Wi
 
 .. _part_one:
 
-PART ONE
+PART I
 --------
 
-In Part One, we will mainly use prompt commands and a text editor to generate a minimal amount of boilerplate and other setting files manually. 
+In Part I, we will mainly use prompt commands and a text editor to generate a minimal amount of boilerplate and other setting files manually. 
 
 
 .. _creating_example_project:
@@ -403,10 +403,10 @@ The default admin page should be ``http://localhost:8000/admin``.
 
 .. _part_two:
 
-PART TWO
+PART II
 --------
 
-In Part Two, our configurations take place primarily within Django admin dashboard.
+In Part II, our configurations take place primarily within Django admin dashboard.
 
 .. note::
 
@@ -441,7 +441,7 @@ Give the scraper a name ``Wikinews Scraper`` for our ``open news`` app.
 
 .. _defining_scraped_obj_class:
 
-Defining Scraped Object class
+Defining Scraped Object Class
 """""""""""""""""""""""""""""
 
 Next, we need to define :ref:`scraped_obj_class`. A ``Scraped obj class`` is basically the item which the app scrapes from the source. All attributes associated with this item need to be defined as well. In our example, an Article is the item, and its attributes includes the title, the description, the url and the thumbnail image. Click ``+`` icon and another window pops up. For ``open news`` app, the item name is ``Article``. For its attributes, select one of the following types defined in ``scrapy_django_dashboard.models.ScrapedObjAttr``: ::
@@ -473,7 +473,7 @@ Save the settings. For now, set ``status`` to ``MANUAL``, since we will run the 
 
 .. _locating_elements:
 
-Locating elements
+Locating Elements
 """""""""""""""""
 
 Now, let us move down to ``Scraper elems`` section. Each element corresponds to the attribute we defined in ``Scraped obj class``. By following the customs of Scrapy, we can use ``x_path`` or ``reg_exp`` to locate the information from the source. The ``request_page_type`` decides if the scraper should extract the data a ``Main Page`` or a ``Detail Page``. 
