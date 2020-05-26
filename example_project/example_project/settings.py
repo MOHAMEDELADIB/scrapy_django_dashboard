@@ -181,3 +181,7 @@ BROKER_USER = "guest"
 BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+
+# Django-Grapelli Custom Settings
+GRAPPELLI_ADMIN_TITLE = "Example Project - Open News App"
