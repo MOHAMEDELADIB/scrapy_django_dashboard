@@ -92,7 +92,7 @@
         "last_checker_delete_alert_period": "",
         "next_last_checker_delete_alert": "2020-05-16T15:09:50",
         "comments": "",
-        "last_scraper_save": "2020-05-22T14:50:46.621",
+        "last_scraper_save": "2020-05-26T12:09:18.587",
         "last_checker_delete": null
     }
 },
@@ -122,66 +122,6 @@
     "fields": {
         "page_type": "DP1",
         "scraped_obj_attr": 2,
-        "scraper": 1,
-        "content_type": "H",
-        "render_javascript": false,
-        "request_type": "R",
-        "method": "GET",
-        "headers": "",
-        "body": "",
-        "cookies": "",
-        "meta": "",
-        "form_data": "",
-        "dont_filter": false,
-        "comments": ""
-    }
-},
-{
-    "model": "scrapy_django_dashboard.requestpagetype",
-    "pk": 8,
-    "fields": {
-        "page_type": "DP2",
-        "scraped_obj_attr": 3,
-        "scraper": 1,
-        "content_type": "H",
-        "render_javascript": false,
-        "request_type": "R",
-        "method": "GET",
-        "headers": "",
-        "body": "",
-        "cookies": "",
-        "meta": "",
-        "form_data": "",
-        "dont_filter": false,
-        "comments": ""
-    }
-},
-{
-    "model": "scrapy_django_dashboard.requestpagetype",
-    "pk": 9,
-    "fields": {
-        "page_type": "DP3",
-        "scraped_obj_attr": 4,
-        "scraper": 1,
-        "content_type": "H",
-        "render_javascript": false,
-        "request_type": "R",
-        "method": "GET",
-        "headers": "",
-        "body": "",
-        "cookies": "",
-        "meta": "",
-        "form_data": "",
-        "dont_filter": false,
-        "comments": ""
-    }
-},
-{
-    "model": "scrapy_django_dashboard.requestpagetype",
-    "pk": 10,
-    "fields": {
-        "page_type": "DP4",
-        "scraped_obj_attr": 5,
         "scraper": 1,
         "content_type": "H",
         "render_javascript": false,
