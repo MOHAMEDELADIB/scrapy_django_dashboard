@@ -92,7 +92,7 @@
         "last_checker_delete_alert_period": "",
         "next_last_checker_delete_alert": "2020-05-16T15:09:50",
         "comments": "",
-        "last_scraper_save": "2020-05-26T12:09:18.587",
+        "last_scraper_save": "2020-05-26T16:11:41.811",
         "last_checker_delete": null
     }
 },
@@ -157,7 +157,7 @@
     "fields": {
         "scraped_obj_attr": 4,
         "scraper": 1,
-        "x_path": "p/span[@class=\"l_summary\"]/text()",
+        "x_path": "string(p/span[@class=\"l_summary\"])",
         "reg_exp": "",
         "request_page_type": "MP",
         "use_default_procs": true,
@@ -202,7 +202,7 @@
     "fields": {
         "scraped_obj_attr": 2,
         "scraper": 1,
-        "x_path": "//h1[@id=\"firstHeading\"]/text()",
+        "x_path": "string(//h1[@id=\"firstHeading\"])",
         "reg_exp": "",
         "request_page_type": "DP1",
         "use_default_procs": true,
