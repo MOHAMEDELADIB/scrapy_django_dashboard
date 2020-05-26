@@ -103,11 +103,13 @@ class RequestPageTypeFormSet(BaseInlineFormSet):
 
 class RequestPageTypeInline(admin.StackedInline):
     model = RequestPageType
+    classes = ('grp-collapse grp-open',)
     formset = RequestPageTypeFormSet
     extra = 0
 
 class CheckerInline(admin.StackedInline):
     model = Checker
+    classes = ('grp-collapse grp-closed',)
     extra = 0
 
 
@@ -144,18 +146,14 @@ class ScraperAdmin(admin.ModelAdmin):
     list_filter = ('scraped_obj_class', 'status', 'work_status', 'owner',)
     search_fields = ['name']
     inlines = [
+        ScraperElemInline,
         RequestPageTypeInline,
-        CheckerInline,
-        ScraperElemInline
+        CheckerInline,        
     ]
     fieldsets = (
-        (None, {
-            'fields': ('name','scraped_obj_class', 'status', 'work_status',)
-        }),
         ('General settings', {
-            'classes': ('grp-collapse grp-closed',),
-            'fields': ( 'owner', \
-                'max_items_read', 'max_items_save')
+            'classes': ('grp-collapse grp-open',),
+            'fields': ( 'name','scraped_obj_class', 'status', 'work_status', 'owner', 'max_items_read', 'max_items_save')
         }),
         ('Pagination', {
             'classes': ('grp-collapse grp-closed',),
@@ -328,7 +326,7 @@ class LogAdmin(admin.ModelAdmin):
         return instance.date.strftime('%Y-%m-%d %H:%M')
 
 
-admin.site.unregister(Group)
+# admin.site.unregister(Group)
 
 admin.site.register(ScrapedObjClass, ScrapedObjClassAdmin)
 admin.site.register(Scraper, ScraperAdmin)
