@@ -41,7 +41,7 @@ setup(
     #    'Celery==3.1.25',
     #    'django-celery==3.2.1', # Scheduling
         'future==0.17.1',
-        'pillow==5.4.1',
+        'pillow==9.0.0',
         'attrs==19.3.0',
     ],
     classifiers=[
