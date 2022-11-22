@@ -6,7 +6,7 @@ Django==3.0.6
 django-grappelli==2.14.2
 future==0.17.1
 jsonpath-rw==1.4.0
-Pillow==5.4.1
+Pillow==9.3.0
 Scrapy==2.1.0
 scrapy-djangoitem==1.1.1
 scrapy-splash==0.7.2
