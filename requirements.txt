@@ -4,7 +4,7 @@ anyjson==0.3.3
 billiard==3.3.0.23
 Django==3.0.6
 django-grappelli==2.14.2
-future==0.17.1
+future==0.18.3
 jsonpath-rw==1.4.0
 Pillow==5.4.1
 Scrapy==2.1.0
