@@ -40,7 +40,7 @@ setup(
     #    'kombu>=3.0.37,<3.1',
     #    'Celery==3.1.25',
     #    'django-celery==3.2.1', # Scheduling
-        'future==0.17.1',
+        'future==0.18.3',
         'pillow==5.4.1',
         'attrs==19.3.0',
     ],
